@@ -12,6 +12,7 @@
     "@tanstack/react-table": "^8.10.7",
     "next": "^13.5.4",
     "react": "latest",
+    "react-avatar-editor": "^13.0.0",
     "react-dom": "latest",
     "react-icons": "^4.11.0",
     "react-toastify": "^9.1.3"

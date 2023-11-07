@@ -128,3 +128,9 @@ export const districts = [
   { value: "ත්‍රිකුණාමලය" },
   { value: "වවුනියාව" },
 ];
+
+export const approvalStatus = [
+  { value: "Unapproved" },
+  { value: "Approved" },
+  { value: "Unapproved & Approved " },
+];

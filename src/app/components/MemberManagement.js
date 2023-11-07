@@ -18,6 +18,7 @@ const MemberManagement = () => {
       />
       <OptionBar
         addBtn={true}
+        isApprovalFilter={true}
         setSearchTerm={(value) => setSearchTerm(value)}
       />
       <div className="mt-20">
