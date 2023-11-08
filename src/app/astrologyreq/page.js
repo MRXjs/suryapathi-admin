@@ -1,17 +1,10 @@
-"use client";
 import React from "react";
-import SideBar from "../components/SideBar";
-import OptionBar from "../components/OptionBar";
+import AstrologyReqManage from "../components/AstrologyReqManage";
 
 const page = () => {
   return (
     <main>
-      <SideBar
-        tableWFull={(value) => {
-          console.log(value);
-        }}
-      />
-      <OptionBar />
+      <AstrologyReqManage />
     </main>
   );
 };

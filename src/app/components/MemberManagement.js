@@ -16,10 +16,11 @@ const MemberManagement = () => {
           setTableWFull(value);
         }}
       />
+
       <OptionBar
-        addBtn={true}
-        isApprovalFilter={true}
+        proposal={true}
         setSearchTerm={(value) => setSearchTerm(value)}
+        fullWidth={tableWFull}
       />
       <div className="mt-20">
         <MemberTable
