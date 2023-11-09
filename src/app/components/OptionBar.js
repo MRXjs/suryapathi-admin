@@ -4,14 +4,14 @@ import { IconContext } from "react-icons";
 import { AiOutlinePlus } from "react-icons/ai";
 import { CiSearch } from "react-icons/ci";
 
-const OptionBar = ({ proposal, setSearchTerm, astrology, fullWidth }) => {
+const OptionBar = ({ setSearchTerm, member, fullWidth }) => {
   return (
     <div
       className={`fixed top-0 flex items-center w-full p-5 bg-white border-b-2 ${
         fullWidth ? "left-72" : "left-20  duration-300"
       } `}
     >
-      {proposal ? (
+      {member ? (
         <>
           <button class="bg-blue-500 ml-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center text-lg duration-300">
             <IconContext.Provider
@@ -36,7 +36,7 @@ const OptionBar = ({ proposal, setSearchTerm, astrology, fullWidth }) => {
         </>
       ) : null}
 
-      {astrology ? (
+      {!member ? (
         <>
           <div className="flex items-center ml-10">
             <select

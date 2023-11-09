@@ -18,7 +18,7 @@ const MemberManagement = () => {
       />
 
       <OptionBar
-        proposal={true}
+        member={true}
         setSearchTerm={(value) => setSearchTerm(value)}
         fullWidth={tableWFull}
       />

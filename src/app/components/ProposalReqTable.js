@@ -1,4 +1,5 @@
 "use client";
+import React, { useEffect, useState } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -7,131 +8,73 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import Image from "next/image";
-import { useEffect, useState } from "react";
-import { memberDelete } from "@/app/api/member";
+import data from "@/DB/proposalReq.json";
+import { paymentStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
-import { FaPencil } from "react-icons/fa6";
-import MemberUpdatePopup from "./MemberUpdatePopup";
-import { approvalStatus } from "@/DB/selecterOptions";
+import { astroReqDelete } from "../api/astroReq";
 
-const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
-  const [data] = useState(() => [...memberData]);
+const ProposalReqTable = ({ searchTerm, tableWFull }) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
-  const [isMemberUpdatePopup, setIsMemberUpdatePopup] = useState(false);
-  const [currentRow, setCurrentRow] = useState({});
 
   const columns = [
-    columnHelper.accessor("img", {
-      cell: (info) => (
-        <Image
-          alt={""}
-          src={info.getValue()}
-          width={50}
-          height={50}
-          className="object-cover w-10 h-10 rounded-full"
-        />
-      ),
-      header: "Picture",
-    }),
     columnHelper.accessor("id", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "ID",
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("full_name", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Name",
     }),
-    columnHelper.accessor("birthDay", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Birth Day",
-    }),
-    columnHelper.accessor("age", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Age",
-    }),
-    columnHelper.accessor("height", {
-      cell: (info) => (
-        <span>{`Feet : ${info.row.original.feet} Inch : ${info.row.original.inch}`}</span>
-      ),
-      header: "Height",
-    }),
-    columnHelper.accessor("nicNo", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "NIC No",
-    }),
-    columnHelper.accessor("mobileNumber", {
+    columnHelper.accessor("phone", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Phone Number",
     }),
-    columnHelper.accessor("nation", {
+    columnHelper.accessor("description", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Nation",
+      header: "Description",
     }),
-    columnHelper.accessor("religion", {
+    columnHelper.accessor("service", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "Religion",
+      header: "Service",
     }),
-    columnHelper.accessor("caste", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "caste",
-    }),
-    columnHelper.accessor("job", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Job",
-    }),
-    columnHelper.accessor("address", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Address",
-    }),
-    columnHelper.accessor("district", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "District",
-    }),
-    columnHelper.accessor("maritalStatus", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Marital Status",
-    }),
-    columnHelper.accessor("monthlyIncome", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Monthly Income",
-    }),
-    columnHelper.accessor("", {
+    columnHelper.accessor("payment_status", {
       cell: (info) => (
         <select
-          id="countries"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          value={info.getValue()}
+          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+            info.getValue() ? "!text-green-400 font-bold" : ""
+          }`}
         >
-          {approvalStatus.map((state, index) => (
-            <option key={index} value={index}>
-              {state.value}
+          {paymentStatus.map((state, index) => (
+            <option
+              key={index}
+              value={state.value}
+              className={`${
+                state.value ? "text-green-400 font-bold" : " text-red-500"
+              }`}
+            >
+              {state.text}
             </option>
           ))}
         </select>
       ),
-      header: "Approval",
+      header: "Payment status",
     }),
-
+    columnHelper.accessor("payment_method", {
+      cell: (info) => (
+        <span>{info.getValue() ? "Online" : "Bank Transfer"}</span>
+      ),
+      header: "Payment method",
+    }),
     columnHelper.accessor("", {
       cell: (info) => (
-        <div className="flex items-center justify-center">
-          <button className="m-3">
-            <FaPencil
-              size={25}
-              color="white"
-              onClick={() => {
-                setIsMemberUpdatePopup(true);
-                setCurrentRow(info.row.original);
-              }}
-            />
-          </button>
-          pppp
+        <div className="flex items-center justify-start">
           <button className="p-3">
             <BsFillTrashFill
               size={25}
               color="red"
-              onClick={() => memberDelete(0)}
+              onClick={() => astroReqDelete(0)}
             />
           </button>
         </div>
@@ -139,10 +82,6 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
       header: "Actions",
     }),
   ];
-
-  useEffect(() => {
-    setGlobalFilter(searchTerm);
-  }, [searchTerm]);
 
   const table = useReactTable({
     data,
@@ -155,16 +94,12 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  useEffect(() => {
+    setGlobalFilter(searchTerm);
+  }, [searchTerm]);
+
   return (
     <>
-      {isMemberUpdatePopup ? (
-        <MemberUpdatePopup
-          open={isMemberUpdatePopup}
-          rowData={currentRow}
-          onClose={() => setIsMemberUpdatePopup(false)}
-        />
-      ) : null}
-
       <div
         className={`p-5 mb-16 ${tableWFull ? "ml-72" : "ml-20"} duration-300  `}
       >
@@ -189,11 +124,18 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
                   <tr
                     key={row.id}
                     className={`
-                  ${i % 2 === 0 ? "bg-gray-900" : "bg-gray-800"}
-                `}
+          ${i % 2 === 0 ? "bg-gray-900" : "bg-gray-800"}
+        `}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-3.5 py-2">
+                      <td
+                        key={cell.id}
+                        className={`px-3.5 py-2 ${
+                          row.original.payment_status
+                            ? " text-green-400 font-bold"
+                            : ""
+                        }`}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()
@@ -265,4 +207,4 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
   );
 };
 
-export default MemberTable;
+export default ProposalReqTable;

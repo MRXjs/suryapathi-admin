@@ -10,14 +10,19 @@ import { FaSun } from "react-icons/fa";
 import { LuBaby } from "react-icons/lu";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
+import { BsFillEnvelopePaperHeartFill, BsPersonHearts } from "react-icons/Bs";
 
 const SideBar = ({ tableWFull }) => {
   const router = useRouter();
   const pathName = usePathname();
   const [sideBarOpen, setSideBarOpen] = useState(true);
-  const [currentMenuIndex, setCurrentMenuIndex] = useState(1);
   const Menus = [
     { title: "Member Management", icon: <MdManageAccounts />, url: "/" },
+    {
+      title: "Proposal Request",
+      icon: <BsFillEnvelopePaperHeartFill />,
+      url: "/proposalreq",
+    },
     { title: "Astrology Requests", icon: <FaSun />, url: "/astrologyreq" },
     { title: "Baby Name Requests", icon: <LuBaby />, url: "/babynamereq" },
     { title: "Log Out", icon: <BiLogOutCircle />, url: "/auth" },
@@ -25,11 +30,8 @@ const SideBar = ({ tableWFull }) => {
 
   const sideBarController = () => {
     setSideBarOpen(!sideBarOpen);
+    tableWFull(!sideBarOpen);
   };
-
-  useEffect(() => {
-    tableWFull(sideBarOpen);
-  }, [sideBarOpen]);
 
   const menusHandler = (url) => {
     router.push(url);
@@ -78,7 +80,7 @@ const SideBar = ({ tableWFull }) => {
             >
               {/* {menu.title} */}
               <IconContext.Provider value={{ size: "25" }}>
-                <div>{menu.icon}</div>
+                <div className="shrink-0">{menu.icon}</div>
               </IconContext.Provider>
               <span
                 className={`${

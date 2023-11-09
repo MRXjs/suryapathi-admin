@@ -130,3 +130,8 @@ export const districts = [
 ];
 
 export const approvalStatus = [{ value: "Unapproved" }, { value: "Approved" }];
+
+export const paymentStatus = [
+  { text: "Paid", value: true },
+  { text: "Unpaid", value: false },
+];

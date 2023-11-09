@@ -1,12 +1,13 @@
 "use client";
-import SideBar from "../components/SideBar";
-import OptionBar from "../components/OptionBar";
 import React, { useState } from "react";
-import AstrologyReqTable from "./AstrologyReqTable";
+import SideBar from "./SideBar";
+import OptionBar from "./OptionBar";
+import ProposalReqTable from "./ProposalReqTable";
 
-const AstrologyReqManage = () => {
+const ProposalReqManage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [tableWFull, setTableWFull] = useState(true);
+
   return (
     <div>
       <SideBar
@@ -19,10 +20,10 @@ const AstrologyReqManage = () => {
         fullWidth={tableWFull}
       />
       <div className="mt-20">
-        <AstrologyReqTable searchTerm={searchTerm} tableWFull={tableWFull} />
+        <ProposalReqTable searchTerm={searchTerm} tableWFull={tableWFull} />
       </div>
     </div>
   );
 };
 
-export default AstrologyReqManage;
+export default ProposalReqManage;

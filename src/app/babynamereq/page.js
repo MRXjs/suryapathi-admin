@@ -1,15 +1,12 @@
 "use client";
 import React from "react";
 import SideBar from "../components/SideBar";
+import BabyNameReqManage from "../components/BabyNameReqManage";
 
 const page = () => {
   return (
     <main>
-      <SideBar
-        tableWFull={(value) => {
-          console.log(value);
-        }}
-      />
+      <BabyNameReqManage />
     </main>
   );
 };
