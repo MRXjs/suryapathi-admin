@@ -129,9 +129,17 @@ export const districts = [
   { value: "වවුනියාව" },
 ];
 
-export const approvalStatus = [{ value: "Unapproved" }, { value: "Approved" }];
+export const approvalStatus = [
+  { value: true, text: "Approved" },
+  { value: false, text: "Unapproved" },
+];
 
 export const paymentStatus = [
   { text: "Paid", value: true },
   { text: "Unpaid", value: false },
+];
+
+export const reqStatus = [
+  { text: "Pending", value: false },
+  { text: "Completed", value: true },
 ];

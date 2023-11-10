@@ -15,12 +15,33 @@ import { FaPencil } from "react-icons/fa6";
 import MemberUpdatePopup from "./MemberUpdatePopup";
 import { approvalStatus } from "@/DB/selecterOptions";
 
-const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
-  const [data] = useState(() => [...memberData]);
+const MemberTable = ({
+  memberData,
+  searchTerm,
+  tableWFull,
+  memberApprovalfilter,
+}) => {
+  const [data, setData] = useState(() => [...memberData]);
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
   const [isMemberUpdatePopup, setIsMemberUpdatePopup] = useState(false);
   const [currentRow, setCurrentRow] = useState({});
+
+  const approvalHandler = (e) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((row) => {
+        if (row.id == e.target.id) {
+          return {
+            ...row,
+            approval: JSON.parse(e.target.value),
+          };
+        }
+        return row;
+      });
+
+      return updatedData;
+    });
+  };
 
   const columns = [
     columnHelper.accessor("img", {
@@ -97,15 +118,21 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Monthly Income",
     }),
-    columnHelper.accessor("", {
+    columnHelper.accessor("approval", {
       cell: (info) => (
         <select
-          id="countries"
-          class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+          onChange={approvalHandler}
+          value={info.getValue()}
+          id={info.row.original.id}
+          class={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 ${
+            info.row.original.approval
+              ? "text-green-400 font-semibold"
+              : "text-white"
+          } } dark:focus:ring-blue-500 dark:focus:border-blue-500`}
         >
           {approvalStatus.map((state, index) => (
-            <option key={index} value={index}>
-              {state.value}
+            <option key={index} value={state.value}>
+              {state.text}
             </option>
           ))}
         </select>
@@ -119,7 +146,12 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
           <button className="m-3">
             <FaPencil
               size={25}
-              color="white"
+              color={
+                info.row.original.approval == "true" ||
+                info.row.original.approval == true
+                  ? "#4ade80"
+                  : "white"
+              }
               onClick={() => {
                 setIsMemberUpdatePopup(true);
                 setCurrentRow(info.row.original);
@@ -193,7 +225,14 @@ const MemberTable = ({ memberData, searchTerm, tableWFull }) => {
                 `}
                   >
                     {row.getVisibleCells().map((cell) => (
-                      <td key={cell.id} className="px-3.5 py-2">
+                      <td
+                        key={cell.id}
+                        className={`px-3.5 py-2 ${
+                          row.original.approval
+                            ? " text-green-400 font-semibold"
+                            : ""
+                        }`}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext()

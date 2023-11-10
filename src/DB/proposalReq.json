@@ -6,7 +6,8 @@
     "description": "Frequency modulation fascination",
     "payment_method": "ruby@ripple.com",
     "payment_status": false,
-    "selected_members": ["02", "07", "10"]
+    "selected_members": ["02", "07", "10"],
+    "status": false
   },
   {
     "id": 19,
@@ -15,7 +16,8 @@
     "description": "Compulsive rhyming disorder",
     "payment_method": "leo@limerick.org",
     "payment_status": true,
-    "selected_members": ["01", "03", "08"]
+    "selected_members": ["01", "03", "08"],
+    "status": false
   },
   {
     "id": 20,
@@ -24,7 +26,8 @@
     "description": "Speed of thought experiments",
     "payment_method": "violet@velocity.net",
     "payment_status": true,
-    "selected_members": ["04", "06", "09"]
+    "selected_members": ["04", "06", "09"],
+    "status": false
   },
   {
     "id": 15,
@@ -33,7 +36,8 @@
     "description": "Prankster's dilemma",
     "payment_method": "max@mischief.co",
     "payment_status": false,
-    "selected_members": ["01", "02", "10"]
+    "selected_members": ["01", "02", "10"],
+    "status": false
   },
   {
     "id": 16,
@@ -42,7 +46,8 @@
     "description": "Illuminating personality",
     "payment_method": "lily@lumos.org",
     "payment_status": true,
-    "selected_members": ["03", "06", "08"]
+    "selected_members": ["03", "06", "08"],
+    "status": false
   },
   {
     "id": 17,
@@ -51,7 +56,8 @@
     "description": "Wanderlust-induced amnesia",
     "payment_method": "oscar@odyssey.net",
     "payment_status": true,
-    "selected_members": ["04", "05", "09"]
+    "selected_members": ["04", "05", "09"],
+    "status": false
   },
   {
     "id": 12,
@@ -60,7 +66,8 @@
     "description": "Melody in chaos disorder",
     "payment_method": "grace@harmony.net",
     "payment_status": false,
-    "selected_members": ["02", "05", "06"]
+    "selected_members": ["02", "05", "06"],
+    "status": false
   },
   {
     "id": 13,
@@ -69,7 +76,8 @@
     "description": "Living in technicolor",
     "payment_method": "sam@spectrum.org",
     "payment_status": true,
-    "selected_members": ["01", "03", "09"]
+    "selected_members": ["01", "03", "09"],
+    "status": false
   },
   {
     "id": 14,
@@ -78,7 +86,8 @@
     "description": "Indecision syndrome",
     "payment_method": "olivia@options.com",
     "payment_status": true,
-    "selected_members": ["04", "07", "08"]
+    "selected_members": ["04", "07", "08"],
+    "status": false
   },
   {
     "id": 9,
@@ -87,7 +96,8 @@
     "description": "Silent laughter epidemic",
     "payment_method": "charlie@laughter.com",
     "payment_status": false,
-    "selected_members": ["05", "06", "10"]
+    "selected_members": ["05", "06", "10"],
+    "status": false
   },
   {
     "id": 10,
@@ -96,7 +106,8 @@
     "description": "Allergic to pollen and irony",
     "payment_method": "daisy@fields.co",
     "payment_status": true,
-    "selected_members": ["01", "04", "09"]
+    "selected_members": ["01", "04", "09"],
+    "status": false
   },
   {
     "id": 11,
@@ -105,7 +116,8 @@
     "description": "Quantum physics enthusiast",
     "payment_method": "frank@einstein.edu",
     "payment_status": true,
-    "selected_members": ["03", "07", "08"]
+    "selected_members": ["03", "07", "08"],
+    "status": false
   },
   {
     "id": 6,
@@ -114,7 +126,8 @@
     "description": "Curious case of curiosity",
     "payment_method": "alice@wonderland.com",
     "payment_status": false,
-    "selected_members": ["04", "05", "09"]
+    "selected_members": ["04", "05", "09"],
+    "status": false
   },
   {
     "id": 7,
@@ -123,7 +136,8 @@
     "description": "Constructive personality disorder",
     "payment_method": "bob@builder.net",
     "payment_status": true,
-    "selected_members": ["02", "08", "10"]
+    "selected_members": ["02", "08", "10"],
+    "status": false
   },
   {
     "id": 8,
@@ -132,7 +146,8 @@
     "description": "Creation myth enthusiast",
     "payment_method": "eve@genesis.org",
     "payment_status": true,
-    "selected_members": ["01", "03", "07"]
+    "selected_members": ["01", "03", "07"],
+    "status": false
   },
   {
     "id": 3,
@@ -141,7 +156,8 @@
     "description": "Jenny's number",
     "payment_method": "tommytutone@example.com",
     "payment_status": false,
-    "selected_members": ["11", "12", "13"]
+    "selected_members": ["11", "12", "13"],
+    "status": false
   },
   {
     "id": 4,
@@ -150,7 +166,8 @@
     "description": "Unknown ailment",
     "payment_method": "janedoe@mail.com",
     "payment_status": true,
-    "selected_members": ["06", "07", "08"]
+    "selected_members": ["06", "07", "08"],
+    "status": false
   },
   {
     "id": 5,
@@ -159,6 +176,7 @@
     "description": "Chronic laughter syndrome",
     "payment_method": "johnsmith@domain.com",
     "payment_status": true,
-    "selected_members": ["01", "02", "03"]
+    "selected_members": ["01", "02", "03"],
+    "status": false
   }
 ]

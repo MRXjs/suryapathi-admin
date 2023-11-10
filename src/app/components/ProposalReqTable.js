@@ -8,16 +8,70 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import data from "@/DB/proposalReq.json";
-import { paymentStatus } from "@/DB/selecterOptions";
+import fetchedData from "@/DB/proposalReq.json";
+import { paymentStatus, reqStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { astroReqDelete } from "../api/astroReq";
+import { FcApproval, FcHighPriority } from "react-icons/fc";
 
 const ProposalReqTable = ({ searchTerm, tableWFull }) => {
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
+  const [data, setData] = useState(() => [...fetchedData]);
+
+  const paymentStatusHandler = (e) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((row) => {
+        if (row.id == e.target.id) {
+          return {
+            ...row,
+            payment_status: JSON.parse(e.target.value),
+          };
+        }
+        return row;
+      });
+
+      return updatedData;
+    });
+  };
+
+  const statusHandler = (e) => {
+    setData((prevData) => {
+      const updatedData = prevData.map((row) => {
+        if (row.id == e.target.id) {
+          return {
+            ...row,
+            status: JSON.parse(e.target.value),
+          };
+        }
+        return row;
+      });
+
+      return updatedData;
+    });
+  };
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   const columns = [
+    columnHelper.accessor("status", {
+      cell: (info) => (
+        <span>
+          {info.renderValue() ? (
+            <div className=" animate-pulse">
+              <FcApproval size={35} />
+            </div>
+          ) : (
+            <div className=" animate-pulse">
+              <FcHighPriority size={35} />
+            </div>
+          )}
+        </span>
+      ),
+      header: "",
+    }),
     columnHelper.accessor("id", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "ID",
@@ -41,6 +95,8 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
     columnHelper.accessor("payment_status", {
       cell: (info) => (
         <select
+          id={info.row.original.id}
+          onChange={paymentStatusHandler}
           value={info.getValue()}
           className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
             info.getValue() ? "!text-green-400 font-bold" : ""
@@ -60,6 +116,29 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
         </select>
       ),
       header: "Payment status",
+    }),
+    columnHelper.accessor("status", {
+      cell: (info) => (
+        <select
+          id={info.row.original.id}
+          onChange={statusHandler}
+          value={info.getValue()}
+          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+            info.getValue() ? "!text-green-400" : ""
+          }`}
+        >
+          {reqStatus.map((state, index) => (
+            <option
+              key={index}
+              value={state.value}
+              className={`${state.value ? "text-green-400" : " text-red-500"}`}
+            >
+              {state.text}
+            </option>
+          ))}
+        </select>
+      ),
+      header: "Status",
     }),
     columnHelper.accessor("payment_method", {
       cell: (info) => (
@@ -131,9 +210,7 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
                       <td
                         key={cell.id}
                         className={`px-3.5 py-2 ${
-                          row.original.payment_status
-                            ? " text-green-400 font-bold"
-                            : ""
+                          row.original.payment_status ? " text-green-400" : ""
                         }`}
                       >
                         {flexRender(

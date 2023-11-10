@@ -4,7 +4,11 @@ import { IconContext } from "react-icons";
 import { AiOutlinePlus } from "react-icons/ai";
 import { CiSearch } from "react-icons/ci";
 
-const OptionBar = ({ setSearchTerm, member, fullWidth }) => {
+const OptionBar = ({ setSearchTerm, member, fullWidth, Approval }) => {
+  const memberApprovalHandler = (e) => {
+    Approval(e.target.value);
+  };
+
   return (
     <div
       className={`fixed top-0 flex items-center w-full p-5 bg-white border-b-2 ${
@@ -25,6 +29,7 @@ const OptionBar = ({ setSearchTerm, member, fullWidth }) => {
           </button>
           <div className="flex items-center ml-10">
             <select
+              onChange={memberApprovalHandler}
               value={2}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >

@@ -7,6 +7,7 @@ export const data = [
     service: 1,
     payment_status: true,
     payment_method: 1,
+    status: false,
   },
   {
     id: 2,
@@ -16,6 +17,7 @@ export const data = [
     service: 2,
     payment_status: false,
     payment_method: 0,
+    status: false,
   },
   {
     id: 3,
@@ -25,6 +27,7 @@ export const data = [
     service: 3,
     payment_status: false,
     payment_method: 0,
+    status: false,
   },
   {
     id: 4,
@@ -34,6 +37,7 @@ export const data = [
     service: 4,
     payment_status: true,
     payment_method: 1,
+    status: false,
   },
   {
     id: 5,
@@ -43,6 +47,7 @@ export const data = [
     service: 5,
     payment_status: true,
     payment_method: 1,
+    status: false,
   },
   {
     id: 6,
@@ -52,6 +57,7 @@ export const data = [
     service: 6,
     payment_status: false,
     payment_method: 0,
+    status: false,
   },
   {
     id: 7,
@@ -61,6 +67,7 @@ export const data = [
     service: 7,
     payment_status: true,
     payment_method: 0,
+    status: false,
   },
   {
     id: 8,
@@ -70,6 +77,7 @@ export const data = [
     service: 8,
     payment_status: false,
     payment_method: 1,
+    status: false,
   },
   {
     id: 9,
@@ -79,6 +87,7 @@ export const data = [
     service: 9,
     payment_status: false,
     payment_method: 0,
+    status: false,
   },
   {
     id: 10,
@@ -88,6 +97,7 @@ export const data = [
     service: 10,
     payment_status: false,
     payment_method: 1,
+    status: false,
   },
   {
     id: 11,
@@ -97,6 +107,7 @@ export const data = [
     service: 11,
     payment_status: true,
     payment_method: 11,
+    status: false,
   },
   {
     id: 12,
@@ -106,6 +117,7 @@ export const data = [
     service: 12,
     payment_status: false,
     payment_method: 12,
+    status: false,
   },
   {
     id: 13,
@@ -115,6 +127,7 @@ export const data = [
     service: 13,
     payment_status: true,
     payment_method: 13,
+    status: false,
   },
   {
     id: 14,
@@ -124,6 +137,7 @@ export const data = [
     service: 14,
     payment_status: true,
     payment_method: 14,
+    status: false,
   },
   {
     id: 15,
@@ -133,6 +147,7 @@ export const data = [
     service: 15,
     payment_status: false,
     payment_method: 15,
+    status: false,
   },
   {
     id: 16,
@@ -142,6 +157,7 @@ export const data = [
     service: 16,
     payment_status: true,
     payment_method: 16,
+    status: false,
   },
   {
     id: 17,
@@ -151,6 +167,7 @@ export const data = [
     service: 17,
     payment_status: true,
     payment_method: 17,
+    status: false,
   },
   {
     id: 18,
@@ -160,6 +177,7 @@ export const data = [
     service: 18,
     payment_status: false,
     payment_method: 18,
+    status: false,
   },
   {
     id: 19,
@@ -169,6 +187,7 @@ export const data = [
     service: 19,
     payment_status: false,
     payment_method: 19,
+    status: false,
   },
   {
     id: 20,
@@ -178,6 +197,7 @@ export const data = [
     service: 20,
     payment_status: false,
     payment_method: 20,
+    status: false,
   },
   {
     id: 21,
@@ -187,6 +207,7 @@ export const data = [
     service: 21,
     payment_status: true,
     payment_method: 21,
+    status: false,
   },
   {
     id: 22,
@@ -196,6 +217,7 @@ export const data = [
     service: 22,
     payment_status: false,
     payment_method: 22,
+    status: false,
   },
   {
     id: 23,
@@ -205,6 +227,7 @@ export const data = [
     service: 23,
     payment_status: true,
     payment_method: 23,
+    status: false,
   },
   {
     id: 24,
@@ -214,6 +237,7 @@ export const data = [
     service: 24,
     payment_status: true,
     payment_method: 24,
+    status: false,
   },
   {
     id: 25,
@@ -223,6 +247,7 @@ export const data = [
     service: 25,
     payment_status: false,
     payment_method: 25,
+    status: false,
   },
   {
     id: 26,
@@ -232,6 +257,7 @@ export const data = [
     service: 26,
     payment_status: false,
     payment_method: 26,
+    status: false,
   },
   {
     id: 27,
@@ -241,6 +267,7 @@ export const data = [
     service: 27,
     payment_status: false,
     payment_method: 27,
+    status: false,
   },
   {
     id: 28,
@@ -250,6 +277,7 @@ export const data = [
     service: 28,
     payment_status: true,
     payment_method: 28,
+    status: false,
   },
   {
     id: 29,
@@ -259,6 +287,7 @@ export const data = [
     service: 29,
     payment_status: false,
     payment_method: 29,
+    status: false,
   },
   {
     id: 30,
@@ -268,6 +297,7 @@ export const data = [
     service: 30,
     payment_status: true,
     payment_method: 30,
+    status: false,
   },
   {
     id: 31,
@@ -277,6 +307,7 @@ export const data = [
     service: 31,
     payment_status: true,
     payment_method: 31,
+    status: false,
   },
   {
     id: 32,
@@ -286,6 +317,7 @@ export const data = [
     service: 32,
     payment_status: true,
     payment_method: 32,
+    status: false,
   },
   {
     id: 33,
@@ -295,6 +327,7 @@ export const data = [
     service: 33,
     payment_status: true,
     payment_method: 33,
+    status: false,
   },
   {
     id: 34,
@@ -304,6 +337,7 @@ export const data = [
     service: 34,
     payment_status: true,
     payment_method: 34,
+    status: false,
   },
   {
     id: 35,
@@ -313,6 +347,7 @@ export const data = [
     service: 35,
     payment_status: true,
     payment_method: 35,
+    status: false,
   },
   {
     id: 36,
@@ -322,6 +357,7 @@ export const data = [
     service: 36,
     payment_status: true,
     payment_method: 36,
+    status: false,
   },
   {
     id: 37,
@@ -331,6 +367,7 @@ export const data = [
     service: 37,
     payment_status: false,
     payment_method: 37,
+    status: false,
   },
   {
     id: 38,
@@ -340,6 +377,7 @@ export const data = [
     service: 38,
     payment_status: true,
     payment_method: 38,
+    status: false,
   },
   {
     id: 39,
@@ -349,6 +387,7 @@ export const data = [
     service: 39,
     payment_status: false,
     payment_method: 39,
+    status: false,
   },
   {
     id: 40,
@@ -358,6 +397,7 @@ export const data = [
     service: 40,
     payment_status: true,
     payment_method: 40,
+    status: false,
   },
   {
     id: 41,
@@ -367,6 +407,7 @@ export const data = [
     service: 41,
     payment_status: true,
     payment_method: 41,
+    status: false,
   },
   {
     id: 42,
@@ -376,6 +417,7 @@ export const data = [
     service: 42,
     payment_status: false,
     payment_method: 42,
+    status: false,
   },
   {
     id: 43,
@@ -385,6 +427,7 @@ export const data = [
     service: 43,
     payment_status: false,
     payment_method: 43,
+    status: false,
   },
   {
     id: 44,
@@ -394,6 +437,7 @@ export const data = [
     service: 44,
     payment_status: false,
     payment_method: 44,
+    status: false,
   },
   {
     id: 45,
@@ -403,6 +447,7 @@ export const data = [
     service: 45,
     payment_status: false,
     payment_method: 45,
+    status: false,
   },
   {
     id: 46,
@@ -412,6 +457,7 @@ export const data = [
     service: 46,
     payment_status: true,
     payment_method: 46,
+    status: false,
   },
   {
     id: 47,
@@ -421,6 +467,7 @@ export const data = [
     service: 47,
     payment_status: false,
     payment_method: 47,
+    status: false,
   },
   {
     id: 48,
@@ -430,6 +477,7 @@ export const data = [
     service: 48,
     payment_status: false,
     payment_method: 48,
+    status: false,
   },
   {
     id: 49,
@@ -439,6 +487,7 @@ export const data = [
     service: 49,
     payment_status: false,
     payment_method: 49,
+    status: false,
   },
   {
     id: 50,
@@ -448,5 +497,6 @@ export const data = [
     service: 50,
     payment_status: true,
     payment_method: 50,
+    status: false,
   },
 ];

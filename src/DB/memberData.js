@@ -19,6 +19,7 @@ const memberData = [
     district: "Monaragala",
     maritalStatus: "None",
     monthlyIncome: 100000,
+    approval: false,
   },
   {
     id: "02",
@@ -38,6 +39,8 @@ const memberData = [
     district: "Mumbai",
     maritalStatus: "Married",
     monthlyIncome: 80000,
+    approval: true,
+    status: true,
   },
   {
     id: "03",
@@ -57,6 +60,8 @@ const memberData = [
     district: "New York",
     maritalStatus: "Single",
     monthlyIncome: 55000,
+    approval: true,
+    status: false,
   },
   {
     id: "04",
@@ -76,6 +81,8 @@ const memberData = [
     district: "Madrid",
     maritalStatus: "Married",
     monthlyIncome: 70000,
+    approval: false,
+    status: true,
   },
   {
     id: "05",
@@ -95,6 +102,8 @@ const memberData = [
     district: "Seoul",
     maritalStatus: "Single",
     monthlyIncome: 60000,
+    approval: false,
+    status: false,
   },
   {
     id: "06",
@@ -114,6 +123,8 @@ const memberData = [
     district: "Delhi",
     maritalStatus: "Married",
     monthlyIncome: 90000,
+    approval: true,
+    status: false,
   },
   {
     id: "07",
@@ -133,6 +144,8 @@ const memberData = [
     district: "Los Angeles",
     maritalStatus: "Single",
     monthlyIncome: 75000,
+    approval: true,
+    status: true,
   },
   {
     id: "08",
@@ -152,6 +165,8 @@ const memberData = [
     district: "Mexico City",
     maritalStatus: "Married",
     monthlyIncome: 85000,
+    approval: false,
+    status: false,
   },
   {
     id: "09",
@@ -171,6 +186,8 @@ const memberData = [
     district: "Guadalajara",
     maritalStatus: "Single",
     monthlyIncome: 62000,
+    approval: true,
+    status: false,
   },
   {
     id: "10",
@@ -190,6 +207,8 @@ const memberData = [
     district: "Chicago",
     maritalStatus: "Married",
     monthlyIncome: 95000,
+    approval: true,
+    status: false,
   },
 ];
 
