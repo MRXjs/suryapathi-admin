@@ -228,9 +228,7 @@ const MemberTable = ({
                       <td
                         key={cell.id}
                         className={`px-3.5 py-2 ${
-                          row.original.approval
-                            ? " text-green-400 font-semibold"
-                            : ""
+                          row.original.approval ? " text-green-400" : ""
                         }`}
                       >
                         {flexRender(

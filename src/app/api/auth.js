@@ -1,3 +1,4 @@
+"use client";
 import axios from "axios";
 
 export const login = async (username, password, router) => {
@@ -11,7 +12,7 @@ export const login = async (username, password, router) => {
       loginCredential
     );
     console.log("done");
-    router.push("/");
+    // router.push("/");
   } catch (error) {
     console.log(error);
   }
