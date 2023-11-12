@@ -8,7 +8,11 @@ import OptionBar from "./OptionBar";
 const MemberManagement = () => {
   const [tableWFull, setTableWFull] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
-  const [memberApprovalfilter, setMemberApprovalfilter] = useState(2);
+  const [columnFilters, setColumnFilters] = useState([]);
+
+  useEffect(() => {
+    console.log(columnFilters);
+  }, [columnFilters]);
 
   return (
     <div className="w-screen h-screen">
@@ -22,16 +26,14 @@ const MemberManagement = () => {
         member={true}
         setSearchTerm={(value) => setSearchTerm(value)}
         fullWidth={tableWFull}
-        Approval={(value) => {
-          setMemberApprovalfilter(value);
-        }}
+        setColumnFilters={(values) => setColumnFilters(values)}
       />
       <div className="mt-20">
         <MemberTable
           memberData={memberData}
           searchTerm={searchTerm}
           tableWFull={tableWFull}
-          memberApprovalfilterValue={memberApprovalfilter}
+          columnFilters={columnFilters}
         />
       </div>
     </div>

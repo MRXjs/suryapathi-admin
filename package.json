@@ -11,6 +11,7 @@
   "dependencies": {
     "@tanstack/react-table": "^8.10.7",
     "axios": "^1.6.1",
+    "js-cookie": "^3.0.5",
     "next": "^13.5.4",
     "react": "latest",
     "react-avatar-editor": "^13.0.0",

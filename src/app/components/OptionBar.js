@@ -1,13 +1,43 @@
-import { approvalStatus } from "@/DB/selecterOptions";
-import React from "react";
+"use client";
+import { all } from "axios";
+import React, { useState } from "react";
 import { IconContext } from "react-icons";
 import { AiOutlinePlus } from "react-icons/ai";
 import { CiSearch } from "react-icons/ci";
 
-const OptionBar = ({ setSearchTerm, member, fullWidth, Approval }) => {
+const OptionBar = ({ setSearchTerm, member, fullWidth, setColumnFilters }) => {
+  const [filtersValues, setFiltersValues] = useState([
+    {
+      approvalSelector: 2,
+      paymentMethod: "all",
+      paymentStatus: "all",
+    },
+  ]);
+
   const memberApprovalHandler = (e) => {
-    Approval(e.target.value);
+    const value = e.target.value;
+    if (value == "0") {
+      setColumnFilters([
+        {
+          id: "approval",
+          value: false,
+        },
+      ]);
+    }
+    if (value == "1") {
+      setColumnFilters([
+        {
+          id: "approval",
+          value: true,
+        },
+      ]);
+    }
+    if (value == "2") {
+      setColumnFilters([]);
+    }
   };
+
+  const paymentMethodHandler = (e) => {};
 
   return (
     <div
@@ -29,8 +59,13 @@ const OptionBar = ({ setSearchTerm, member, fullWidth, Approval }) => {
           </button>
           <div className="flex items-center ml-10">
             <select
-              onChange={memberApprovalHandler}
-              value={2}
+              onChange={(e) => {
+                memberApprovalHandler(e);
+                setFiltersValues((prevValues) => {
+                  return { ...prevValues, paymentMethod: e.target.value };
+                });
+              }}
+              value={filtersValues.approvalSelector}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
               <option value={0}>Unapproved</option>
@@ -47,6 +82,12 @@ const OptionBar = ({ setSearchTerm, member, fullWidth, Approval }) => {
             <select
               value={"all"}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+              onClick={(e) => {
+                paymentMethod(e);
+                setFiltersValues((prevValues) => {
+                  return { ...prevValues, approvalSelector: e.target.value };
+                });
+              }}
             >
               <option value={false}>Unpaid</option>
               <option value={true}>Paid</option>

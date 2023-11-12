@@ -15,12 +15,7 @@ import { FaPencil } from "react-icons/fa6";
 import MemberUpdatePopup from "./MemberUpdatePopup";
 import { approvalStatus } from "@/DB/selecterOptions";
 
-const MemberTable = ({
-  memberData,
-  searchTerm,
-  tableWFull,
-  memberApprovalfilter,
-}) => {
+const MemberTable = ({ memberData, searchTerm, tableWFull, columnFilters }) => {
   const [data, setData] = useState(() => [...memberData]);
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
@@ -181,6 +176,7 @@ const MemberTable = ({
     columns,
     state: {
       globalFilter,
+      columnFilters,
     },
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
