@@ -10,10 +10,6 @@ const MemberManagement = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [columnFilters, setColumnFilters] = useState([]);
 
-  useEffect(() => {
-    console.log(columnFilters);
-  }, [columnFilters]);
-
   return (
     <div className="w-screen h-screen">
       <SideBar
