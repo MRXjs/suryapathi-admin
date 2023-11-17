@@ -12,3 +12,8 @@ export const calculateAge = (dateOfBirth) => {
 
   return yearsDiff;
 };
+
+export const getOptionsValue = (array, index) => {
+  const value = array.map((item, i) => (i === index ? item.value : null));
+  return value;
+};

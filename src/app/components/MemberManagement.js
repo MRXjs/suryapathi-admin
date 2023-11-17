@@ -26,7 +26,6 @@ const MemberManagement = () => {
       />
       <div className="mt-20">
         <MemberTable
-          memberData={memberData}
           searchTerm={searchTerm}
           tableWFull={tableWFull}
           columnFilters={columnFilters}

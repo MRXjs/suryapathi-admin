@@ -6,6 +6,7 @@ import {
   castes,
   districts,
   maritalStatus,
+  monthlyIncomes,
   nations,
   professions,
   religions,
@@ -18,7 +19,11 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
   const [row, setRow] = useState(rowData);
   useEffect(() => {
     setRow(rowData);
-  }, []);
+  }, [rowData]);
+
+  const resetAllFiled = () => {
+    setRow(rowData);
+  };
 
   const handleChange = (e) => {
     setRow({ ...row, [e.target.name]: e.target.value });
@@ -45,7 +50,7 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
           X
         </p>
         <div className="flex justify-center">
-          <Avatar img={row.img} />
+          <Avatar img={row.profile_image_url} />
         </div>
         {/* content */}
         <div className="flex flex-col items-start justify-center m-10 ">
@@ -53,8 +58,8 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <span className="text-lg font-semibold">Name</span>
             <input
               type="text"
-              name="name"
-              value={row.name}
+              name="full_name"
+              value={row.full_name}
               onChange={handleChange}
               className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
             />
@@ -65,8 +70,8 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
               <span className="text-lg font-semibold">Birth Day</span>
               <input
                 type="date"
-                name="birthDay"
-                value={row.birthDay}
+                name="birthday"
+                value={row.birthday}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               />
@@ -74,7 +79,7 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="">
               <span className="text-lg font-semibold">Age</span>
               <div className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300">
-                {calculateAge(row.birthDay)}
+                {calculateAge(row.birthday)}
               </div>
             </div>
           </div>
@@ -95,8 +100,8 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
               <span>Inch</span>
               <input
                 type="number"
-                name="inch"
-                value={row.inch}
+                name="inches"
+                value={row.inches}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               />
@@ -107,8 +112,8 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
               <span className="text-lg font-semibold">NIC</span>
               <input
                 type="text"
-                name="nicNo"
-                value={row.nicNo}
+                name="nic"
+                value={row.nic}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               />
@@ -116,9 +121,9 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">Mobile Number</span>
               <input
-                name="mobileNumber"
+                name="phone"
                 type="text"
-                value={row.mobileNumber}
+                value={row.phone}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               />
@@ -128,11 +133,17 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">Nation</span>
               <select
+                name="nation"
                 value={row.nation}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               >
                 {nations.map((nation, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
                     {nation.value}
                   </option>
                 ))}
@@ -141,11 +152,17 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">Religion</span>
               <select
+                name="religion"
                 value={row.religion}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               >
                 {religions.map((religion, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
                     {religion.value}
                   </option>
                 ))}
@@ -154,11 +171,17 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">Caste</span>
               <select
+                name="caste"
                 value={row.caste}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               >
                 {castes.map((caste, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
                     {caste.value}
                   </option>
                 ))}
@@ -169,11 +192,17 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">Job</span>
               <select
+                name="job"
                 value={row.job}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               >
                 {professions.map((profession, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
                     {profession.value}
                   </option>
                 ))}
@@ -181,13 +210,22 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             </div>
             <div className="m-1">
               <span className="text-lg font-semibold">Monthly Income</span>
-              <input
-                name="monthlyIncome"
-                type="number"
-                value={row.monthlyIncome}
+              <select
+                name="salary"
+                value={row.salary}
                 onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
-              />
+              >
+                {monthlyIncomes.map((monthlyIncome, index) => (
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
+                    {monthlyIncome.value}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
           <div className="grid w-full grid-cols-1 mt-8">
@@ -204,11 +242,17 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">District</span>
               <select
+                name="district"
                 value={row.district}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               >
                 {districts.map((district, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
                     {district.value}
                   </option>
                 ))}
@@ -217,11 +261,17 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
             <div className="m-1">
               <span className="text-lg font-semibold">Marital Status</span>
               <select
-                value={row.maritalStatus}
+                name="married_status"
+                value={row.married_status}
+                onChange={handleChange}
                 className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
               >
                 {maritalStatus.map((state, index) => (
-                  <option key={index} value={index}>
+                  <option
+                    className={index == 0 ? "hidden" : ""}
+                    key={index}
+                    value={index}
+                  >
                     {state.value}
                   </option>
                 ))}
@@ -237,12 +287,7 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
               console.log("primaryBtnClicked!");
             }}
           />
-          <BtnRed
-            text={"Reset"}
-            onClick={() => {
-              console.log("redBtnClicked!");
-            }}
-          />
+          <BtnRed text={"Reset All Filed"} onClick={resetAllFiled} />
         </div>
       </div>
     </div>

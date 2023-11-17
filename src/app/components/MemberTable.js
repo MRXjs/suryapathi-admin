@@ -9,18 +9,53 @@ import {
 } from "@tanstack/react-table";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { memberDelete } from "@/app/api/member";
+import { getAllMember, memberDelete } from "@/app/api/member";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { FaPencil } from "react-icons/fa6";
 import MemberUpdatePopup from "./MemberUpdatePopup";
-import { approvalStatus } from "@/DB/selecterOptions";
+import {
+  approvalStatus,
+  castes,
+  districts,
+  maritalStatus,
+  monthlyIncomes,
+  nations,
+  professions,
+  religions,
+} from "@/DB/selecterOptions";
+import {
+  calculateAge,
+  getCasteValue,
+  getNationValue,
+  getOptionsValue,
+  getProfessionValue,
+  getReligionValue,
+} from "../functions/functions";
 
-const MemberTable = ({ memberData, searchTerm, tableWFull, columnFilters }) => {
-  const [data, setData] = useState(() => [...memberData]);
+const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
   const [isMemberUpdatePopup, setIsMemberUpdatePopup] = useState(false);
   const [currentRow, setCurrentRow] = useState({});
+
+  // fetchData
+  const fetchData = async (pg) => {
+    setIsLoading(true);
+    const resp = await getAllMember(pg);
+    setData(resp.rows);
+    // setPageCount(Math.ceil(data.count / memberPerPage));
+    setIsLoading(false);
+    try {
+    } catch (error) {
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    fetchData(1);
+  }, []);
 
   const approvalHandler = (e) => {
     setData((prevData) => {
@@ -39,7 +74,7 @@ const MemberTable = ({ memberData, searchTerm, tableWFull, columnFilters }) => {
   };
 
   const columns = [
-    columnHelper.accessor("img", {
+    columnHelper.accessor("profile_image_url", {
       cell: (info) => (
         <Image
           alt={""}
@@ -55,46 +90,50 @@ const MemberTable = ({ memberData, searchTerm, tableWFull, columnFilters }) => {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "ID",
     }),
-    columnHelper.accessor("name", {
+    columnHelper.accessor("full_name", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Name",
     }),
-    columnHelper.accessor("birthDay", {
+    columnHelper.accessor("birthday", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Birth Day",
     }),
     columnHelper.accessor("age", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <span>{calculateAge(info.row.original.birthday)}</span>,
       header: "Age",
     }),
     columnHelper.accessor("height", {
       cell: (info) => (
-        <span>{`Feet : ${info.row.original.feet} Inch : ${info.row.original.inch}`}</span>
+        <span>{`Feet : ${info.row.original.feet} Inch : ${info.row.original.inches}`}</span>
       ),
       header: "Height",
     }),
-    columnHelper.accessor("nicNo", {
+    columnHelper.accessor("nic", {
       cell: (info) => <span>{info.getValue()}</span>,
-      header: "NIC No",
+      header: "NIC",
     }),
-    columnHelper.accessor("mobileNumber", {
+    columnHelper.accessor("phone", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Phone Number",
     }),
     columnHelper.accessor("nation", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <span>{getOptionsValue(nations, info.getValue())}</span>,
       header: "Nation",
     }),
     columnHelper.accessor("religion", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => (
+        <span>{getOptionsValue(religions, info.getValue())}</span>
+      ),
       header: "Religion",
     }),
     columnHelper.accessor("caste", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <span>{getOptionsValue(castes, info.getValue())}</span>,
       header: "caste",
     }),
     columnHelper.accessor("job", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => (
+        <span>{getOptionsValue(professions, info.getValue())}</span>
+      ),
       header: "Job",
     }),
     columnHelper.accessor("address", {
@@ -102,25 +141,31 @@ const MemberTable = ({ memberData, searchTerm, tableWFull, columnFilters }) => {
       header: "Address",
     }),
     columnHelper.accessor("district", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => (
+        <span>{getOptionsValue(districts, info.getValue())}</span>
+      ),
       header: "District",
     }),
-    columnHelper.accessor("maritalStatus", {
-      cell: (info) => <span>{info.getValue()}</span>,
+    columnHelper.accessor("married_status", {
+      cell: (info) => (
+        <span>{getOptionsValue(maritalStatus, info.getValue())}</span>
+      ),
       header: "Marital Status",
     }),
-    columnHelper.accessor("monthlyIncome", {
-      cell: (info) => <span>{info.getValue()}</span>,
+    columnHelper.accessor("salary", {
+      cell: (info) => (
+        <span>{getOptionsValue(monthlyIncomes, info.getValue())}</span>
+      ),
       header: "Monthly Income",
     }),
-    columnHelper.accessor("approval", {
+    columnHelper.accessor("approvell_status", {
       cell: (info) => (
         <select
           onChange={approvalHandler}
           value={info.getValue()}
           id={info.row.original.id}
           class={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 ${
-            info.row.original.approval
+            info.row.original.approvell_status
               ? "text-green-400 font-semibold"
               : "text-white"
           } } dark:focus:ring-blue-500 dark:focus:border-blue-500`}

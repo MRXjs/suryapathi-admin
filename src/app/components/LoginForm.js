@@ -18,7 +18,7 @@ const LoginForm = () => {
   const submitHandler = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    await login(e.target.username.value, e.target.password.value, router);
+    await login(e, router);
     setIsLoading(false);
   };
 

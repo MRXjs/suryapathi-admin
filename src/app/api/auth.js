@@ -1,17 +1,20 @@
 import axios from "axios";
+import { toastError } from "../functions/toast";
 
-export const login = async (username, password, router) => {
+export const login = async (e, router) => {
   const loginCredential = {
-    username,
-    password,
+    username: e.target.username.value,
+    password: e.target.password.value,
   };
+
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/login`,
       loginCredential
     );
+    localStorage.setItem("token", resp.data.token);
     router.push("/");
   } catch (error) {
-    console.log(error);
+    toastError(error.message && error.message);
   }
 };
