@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toastError } from "../functions/toast";
 
-export const getAllMember = async () => {
+export const getAllMember = async (pageNumber) => {
   try {
     const params = new URLSearchParams();
     // if (filterValues.filterGender)
@@ -12,7 +12,7 @@ export const getAllMember = async () => {
     // if (filterValues.filterJob) params.append("job", filterValues.filterJob);
 
     const resp = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/member/all-with-data/${1}`
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/member/all-with-data/${pageNumber}`
     );
     return resp.data;
   } catch (error) {

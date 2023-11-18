@@ -31,9 +31,15 @@ import {
   getProfessionValue,
   getReligionValue,
 } from "../functions/functions";
+import ReactPaginate from "react-paginate";
+import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
 
 const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
   const [data, setData] = useState([]);
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+
   const [isLoading, setIsLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
@@ -45,7 +51,7 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
     setIsLoading(true);
     const resp = await getAllMember(pg);
     setData(resp.rows);
-    // setPageCount(Math.ceil(data.count / memberPerPage));
+    setPageCount(Math.ceil(resp.count / 10));
     setIsLoading(false);
     try {
     } catch (error) {
@@ -56,6 +62,12 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
   useEffect(() => {
     fetchData(1);
   }, []);
+
+  const onChangePage = ({ selected }) => {
+    setData([]);
+    setCurrentPage(selected);
+    fetchData(selected + 1);
+  };
 
   const approvalHandler = (e) => {
     setData((prevData) => {
@@ -285,57 +297,24 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
         </table>
         {/* pagination */}
         <div className="fixed bottom-0 left-0 z-0 w-full bg-white ">
-          <div className="flex items-center justify-end gap-2 my-5">
-            <button
-              onClick={() => {
-                table.previousPage();
-              }}
-              disabled={!table.getCanPreviousPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {"<"}
-            </button>
-            <button
-              onClick={() => {
-                table.nextPage();
-              }}
-              disabled={!table.getCanNextPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {">"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div>page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1">
-              Go to page:{" "}
-              <input
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="w-16 p-1 bg-transparent border rounded"
-              />
-            </span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              className="p-2 bg-transparent "
-            >
-              {[5, 10, 20, 30, 50, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-end gap-2 my-5 mr-5 ">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel={<GrLinkNext size={20} />}
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={1}
+              previousLabel={<GrLinkPrevious size={20} />}
+              pageCount={pageCount}
+              onPageChange={onChangePage}
+              containerClassName={"h-[50px] flex items-center "}
+              pageLinkClassName={
+                "px-2 sm:px-5 py-1 sm:py-2  m-[8px] rounded-[5px] border-2 border-solid border-black hover:bg-black hover:text-white transition duration-300"
+              }
+              activeClassName={
+                "bg-black text-white  py-3  m-[8px] rounded-[5px]"
+              }
+              forcePage={currentPage}
+            />
           </div>
         </div>
       </div>

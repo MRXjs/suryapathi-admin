@@ -31,6 +31,7 @@ const Avatar = ({ img }) => {
         color={[255, 255, 255, 0.6]}
         scale={zoom}
         rotate={0}
+        onImageReady={handleSave}
       />
       <div className="flex items-center justify-center mt-5">
         <span>Zoom</span>
