@@ -1,7 +1,40 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import FormError from "./FormError";
+import Avatar from "./Avatar";
+import { useForm } from "react-hook-form";
+import { formValidations } from "../../DB/formValidations.js";
+import {
+  castes,
+  districts,
+  gender,
+  maritalStatus,
+  monthlyIncomes,
+  nations,
+  professions,
+  religions,
+} from "@/DB/selecterOptions";
+import { memberCreate } from "../api/member";
+import { isOlderThan16 } from "../functions/functions";
 
-const addMemberPopup = () => {
+const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
+  const {
+    register,
+    control,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    reset,
+  } = useForm();
+
+  if (!open) return null;
+  const formSubmitHandler = async (data) => {
+    setIsLoading(true);
+    await memberCreate(data);
+    reset();
+    setIsLoading(false);
+  };
+
   return (
     <div
       className="fixed top-0 bottom-0 left-0 right-0 z-50 flex items-center justify-center !h-full bg-black bg-opacity-50"
@@ -22,18 +55,8 @@ const addMemberPopup = () => {
           X
         </p>
 
-        <div className="flex mx-auto overflow-hidden bg-white shadow-lg xl:w-8/12 rounded-xl">
-          <div className="hidden w-1/2 md:inline-block image-container">
-            <h1 className="mt-6 text-3xl text-center text-white">Welcome</h1>
-            <div>
-              <p className="px-2 text-xl text-center text-white lg:px-10">
-                Ea aliquip aliquip dese runt aliqua tempor. Dolore sit quis qui
-                amet sint aute. Tempor cupidatat laboris do pariatur ex do
-                aliquip dolore ullamco sit mollit enim aliquip aute.
-              </p>
-            </div>
-          </div>
-          <div className="px-4 py-16 sm:px-12 md:w-1/2">
+        <div className="flex mx-auto overflow-hidden bg-white shadow-lg rounded-xl">
+          <div className="px-4 py-16 sm:px-12 ">
             <h2 className="mb-4 text-3xl text-center">
               ලියාපදිංචි කිරීමේ පෝරමය
             </h2>
@@ -43,10 +66,7 @@ const addMemberPopup = () => {
               noValidate
             >
               <div className="flex flex-col items-center justify-center ">
-                <Avatar
-                  selectedAvatar={watch("avatar") ? watch("avatar")[0] : ""}
-                />
-
+                <Avatar img={watch("avatar") ? watch("avatar")[0] : ""} />
                 <input
                   id="avatar"
                   name="avatar"
@@ -220,7 +240,7 @@ const addMemberPopup = () => {
                   })}
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
                 >
-                  {nation.map((nation, index) => (
+                  {nations.map((nation, index) => (
                     <option key={index} value={index}>
                       {nation.value}
                     </option>
@@ -374,21 +394,6 @@ const addMemberPopup = () => {
                   } තෝරාගන්න.`}
                 />
               ) : null}
-
-              <div className="flex items-center mt-8">
-                <input
-                  id="acceptPolicy"
-                  name="acceptPolicy"
-                  {...register("acceptPolicy", {
-                    required: "අපගෙ කොන්දෙසි වලට එකග විය යුතුයී.",
-                  })}
-                  type="checkbox"
-                  className="w-5 h-5 border border-gray-400 cursor-pointer"
-                />
-              </div>
-              {errors.acceptPolicy ? (
-                <FormError error={errors.acceptPolicy.message} />
-              ) : null}
               <div className="mt-8">
                 <button
                   id="submitBtn"
@@ -408,4 +413,4 @@ const addMemberPopup = () => {
   );
 };
 
-export default addMemberPopup;
+export default AddMemberPopup;

@@ -1,43 +1,37 @@
 "use client";
-import { all } from "axios";
 import React, { useState } from "react";
 import { IconContext } from "react-icons";
 import { AiOutlinePlus } from "react-icons/ai";
-import { CiSearch } from "react-icons/ci";
+import Search from "./Search";
+import BtnPrimary from "./BtnPrimary";
+import { IoIosRefresh } from "react-icons/io";
 
-const OptionBar = ({ setSearchTerm, member, fullWidth, setColumnFilters }) => {
-  const [filtersValues, setFiltersValues] = useState([
-    {
-      approvalSelector: 2,
-      paymentMethod: "all",
-      paymentStatus: "all",
-    },
-  ]);
-
-  const memberApprovalHandler = (e) => {
-    const value = e.target.value;
-    if (value == "0") {
-      setColumnFilters([
-        {
-          id: "approval",
-          value: false,
-        },
-      ]);
-    }
-    if (value == "1") {
-      setColumnFilters([
-        {
-          id: "approval",
-          value: true,
-        },
-      ]);
-    }
-    if (value == "2") {
-      setColumnFilters([]);
-    }
+const OptionBar = ({
+  setIsLoading,
+  isLoading,
+  member,
+  fullWidth,
+  setColumnFilters,
+  columnFilters,
+  setData,
+  openAddMember,
+}) => {
+  const filterOnChangeHandler = (e) => {
+    setColumnFilters((prevValue) => ({
+      ...prevValue,
+      [e.target.name]: e.target.value,
+    }));
   };
 
-  const paymentMethodHandler = (e) => {};
+  const resetFormAndFilters = () => {
+    setColumnFilters({
+      memberApproval: "all",
+      payment_status: "all",
+      payment_method: "all",
+    });
+    const form = document.querySelector("#searchForm");
+    form.reset();
+  };
 
   return (
     <div
@@ -47,7 +41,10 @@ const OptionBar = ({ setSearchTerm, member, fullWidth, setColumnFilters }) => {
     >
       {member ? (
         <>
-          <button class="bg-blue-500 ml-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center text-lg duration-300">
+          <button
+            onClick={openAddMember}
+            class="bg-blue-500 ml-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center text-lg duration-300"
+          >
             <IconContext.Provider
               value={{ color: "white", size: "25", className: "mr-2" }}
             >
@@ -59,18 +56,14 @@ const OptionBar = ({ setSearchTerm, member, fullWidth, setColumnFilters }) => {
           </button>
           <div className="flex items-center ml-10">
             <select
-              onChange={(e) => {
-                memberApprovalHandler(e);
-                setFiltersValues((prevValues) => {
-                  return { ...prevValues, paymentMethod: e.target.value };
-                });
-              }}
-              value={filtersValues.approvalSelector}
+              name="memberApproval"
+              value={columnFilters.memberApproval}
+              onChange={filterOnChangeHandler}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
               <option value={0}>Unapproved</option>
               <option value={1}>Approved</option>
-              <option value={2}>Unapproved & Approved </option>
+              <option value={"all"}>Unapproved & Approved </option>
             </select>
           </div>
         </>
@@ -82,15 +75,9 @@ const OptionBar = ({ setSearchTerm, member, fullWidth, setColumnFilters }) => {
             <select
               value={"all"}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-              onClick={(e) => {
-                paymentMethod(e);
-                setFiltersValues((prevValues) => {
-                  return { ...prevValues, approvalSelector: e.target.value };
-                });
-              }}
             >
-              <option value={false}>Unpaid</option>
-              <option value={true}>Paid</option>
+              <option value={0}>Unpaid</option>
+              <option value={1}>Paid</option>
               <option value={"all"}>Unpaid & Paid </option>
             </select>
           </div>
@@ -99,26 +86,23 @@ const OptionBar = ({ setSearchTerm, member, fullWidth, setColumnFilters }) => {
               value={"all"}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
-              <option value={false}>Online</option>
-              <option value={true}>Bank Transfer</option>
+              <option value={0}>Online</option>
+              <option value={1}>Bank Transfer</option>
               <option value={"all"}>Online & Bank Transfer </option>
             </select>
           </div>
         </>
       ) : null}
 
-      <div className="flex items-center w-64 ml-10 border-2 border-solid rounded-md">
-        <IconContext.Provider
-          value={{ color: "#c4c4c4", size: "30", className: "ml-2" }}
-        >
-          <CiSearch />
-        </IconContext.Provider>
-        <input
-          type="text"
-          className="px-4 py-2 outline-none"
-          placeholder="Any Columns"
-          onChange={(e) => setSearchTerm(e.target.value)}
+      <div className="flex items-center ml-10 ">
+        <Search
+          setData={setData}
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
         />
+      </div>
+      <div className="mt-2 ml-10">
+        <BtnPrimary text={<IoIosRefresh />} onClick={resetFormAndFilters} />
       </div>
     </div>
   );

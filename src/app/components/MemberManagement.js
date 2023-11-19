@@ -1,37 +1,77 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import MemberTable from "../components/MemberTable";
-import memberData from "@/DB/memberData";
 import SideBar from "./SideBar";
 import OptionBar from "./OptionBar";
+import LoadingScreen from "./LoadingScreen";
+import AddMemberPopup from "./AddMemberPopup";
 
 const MemberManagement = () => {
+  const [isLoading, setIsLoading] = useState(false);
   const [tableWFull, setTableWFull] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [columnFilters, setColumnFilters] = useState([]);
+  const [data, setData] = useState([]);
+  const [popups, setPopups] = useState({
+    addMemberPopup: false,
+  });
+
+  const openAddMember = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["addMemberPopup"]: true,
+    }));
+  };
+
+  const closeAddMember = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["addMemberPopup"]: false,
+    }));
+  };
+
+  const [columnFilters, setColumnFilters] = useState({
+    memberApproval: "all",
+    payment_status: "all",
+    payment_method: "all",
+  });
 
   return (
-    <div className="w-screen h-screen">
-      <SideBar
-        tableWFull={(value) => {
-          setTableWFull(value);
-        }}
+    <>
+      {isLoading ? <LoadingScreen /> : null}
+      <AddMemberPopup
+        open={popups.addMemberPopup}
+        onClose={closeAddMember}
+        isLoading={isLoading}
+        setIsLoading={setIsLoading}
       />
-
-      <OptionBar
-        member={true}
-        setSearchTerm={(value) => setSearchTerm(value)}
-        fullWidth={tableWFull}
-        setColumnFilters={(values) => setColumnFilters(values)}
-      />
-      <div className="mt-20">
-        <MemberTable
-          searchTerm={searchTerm}
-          tableWFull={tableWFull}
-          columnFilters={columnFilters}
+      <div className="w-screen h-screen">
+        <SideBar
+          tableWFull={(value) => {
+            setTableWFull(value);
+          }}
         />
+
+        <OptionBar
+          setIsLoading={setIsLoading}
+          isLoading={isLoading}
+          member={true}
+          fullWidth={tableWFull}
+          setColumnFilters={(values) => setColumnFilters(values)}
+          columnFilters={columnFilters}
+          openAddMember={openAddMember}
+          setData={setData}
+        />
+        <div className="mt-20">
+          <MemberTable
+            setIsLoading={setIsLoading}
+            isLoading={isLoading}
+            setData={setData}
+            data={data}
+            tableWFull={tableWFull}
+            columnFilters={columnFilters}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

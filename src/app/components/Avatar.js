@@ -1,9 +1,8 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import AvatarEditor from "react-avatar-editor";
 
 const Avatar = ({ img }) => {
-  const [newImage, setNewImg] = useState(img.src);
   const editorRef = useRef();
   const [zoom, setZoom] = useState(1);
 
@@ -24,7 +23,7 @@ const Avatar = ({ img }) => {
       <AvatarEditor
         ref={editorRef}
         onMouseUp={handleSave}
-        image={newImage}
+        image={img}
         width={250}
         height={250}
         border={50}
@@ -47,7 +46,6 @@ const Avatar = ({ img }) => {
           onMouseUp={handleSave}
         />
       </div>
-      <input type="file" onChange={(e) => setNewImg(e.target.files[0])} />
     </div>
   );
 };

@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { IconContext } from "react-icons";
 import controler from "../../../public/control.png";
-import logo from "../../../public/logo.png";
+import sideBarLogo from "../../../public/log-side-bar.png";
 import { MdManageAccounts } from "react-icons/md";
 import { BiLogOutCircle } from "react-icons/bi";
 import { FaSun } from "react-icons/fa";
@@ -55,7 +55,7 @@ const SideBar = ({ tableWFull }) => {
       />
       <div className="flex items-center gap-x-4 ">
         <Image
-          src={logo}
+          src={sideBarLogo}
           alt="logo"
           className={`cursor-pointer duration-500 ${
             sideBarOpen && "rotate-[360deg]"

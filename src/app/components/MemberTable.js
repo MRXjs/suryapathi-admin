@@ -34,13 +34,17 @@ import {
 import ReactPaginate from "react-paginate";
 import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
 
-const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
-  const [data, setData] = useState([]);
-
+const MemberTable = ({
+  data,
+  setData,
+  tableWFull,
+  columnFilters,
+  setIsLoading,
+  isLoading,
+}) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
-  const [isLoading, setIsLoading] = useState(false);
   const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
   const [isMemberUpdatePopup, setIsMemberUpdatePopup] = useState(false);
@@ -49,8 +53,11 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
   // fetchData
   const fetchData = async (pg) => {
     setIsLoading(true);
-    const resp = await getAllMember(pg);
-    setData(resp.rows);
+    const resp = await getAllMember(pg, columnFilters);
+    const tempArray = resp.rows.map((row) =>
+      row.approvel_status === null ? { ...row, approvel_status: false } : row
+    );
+    setData(tempArray);
     setPageCount(Math.ceil(resp.count / 10));
     setIsLoading(false);
     try {
@@ -61,7 +68,9 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
 
   useEffect(() => {
     fetchData(1);
-  }, []);
+  }, [columnFilters]);
+
+  // const searchHandler =  ()
 
   const onChangePage = ({ selected }) => {
     setData([]);
@@ -75,7 +84,7 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
         if (row.id == e.target.id) {
           return {
             ...row,
-            approval: JSON.parse(e.target.value),
+            approvel_status: JSON.parse(e.target.value),
           };
         }
         return row;
@@ -170,14 +179,14 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
       ),
       header: "Monthly Income",
     }),
-    columnHelper.accessor("approvell_status", {
+    columnHelper.accessor("approvel_status", {
       cell: (info) => (
         <select
           onChange={approvalHandler}
           value={info.getValue()}
           id={info.row.original.id}
           class={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 ${
-            info.row.original.approvell_status
+            info.row.original.approvel_status
               ? "text-green-400 font-semibold"
               : "text-white"
           } } dark:focus:ring-blue-500 dark:focus:border-blue-500`}
@@ -199,8 +208,8 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
             <FaPencil
               size={25}
               color={
-                info.row.original.approval == "true" ||
-                info.row.original.approval == true
+                info.row.original.approvel_status == "true" ||
+                info.row.original.approvel_status == true
                   ? "#4ade80"
                   : "white"
               }
@@ -224,17 +233,9 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
     }),
   ];
 
-  useEffect(() => {
-    setGlobalFilter(searchTerm);
-  }, [searchTerm]);
-
   const table = useReactTable({
     data,
     columns,
-    state: {
-      globalFilter,
-      columnFilters,
-    },
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -281,7 +282,7 @@ const MemberTable = ({ searchTerm, tableWFull, columnFilters }) => {
                       <td
                         key={cell.id}
                         className={`px-3.5 py-2 ${
-                          row.original.approval ? " text-green-400" : ""
+                          row.original.approvel_status ? " text-green-400" : ""
                         }`}
                       >
                         {flexRender(

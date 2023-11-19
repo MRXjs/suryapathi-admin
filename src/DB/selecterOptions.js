@@ -143,3 +143,9 @@ export const reqStatus = [
   { text: "Pending", value: false },
   { text: "Completed", value: true },
 ];
+
+export const searchOption = [
+  { text: "Id", value: "id" },
+  { text: "Phone", value: "phone" },
+  { text: "NIC", value: "nic" },
+];
