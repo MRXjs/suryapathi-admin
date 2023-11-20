@@ -14,8 +14,10 @@ export const calculateAge = (dateOfBirth) => {
 };
 
 export const getOptionsValue = (array, index) => {
-  const value = array.map((item, i) => (i === index ? item.value : null));
-  return value;
+  if (array[index]) {
+    return array[index].value;
+  }
+  return null;
 };
 
 export const isOlderThan16 = (birthYear) => {
@@ -54,3 +56,20 @@ export function dataURItoFile(dataURI, filename) {
     resolve(new File([blob], filename, { type: mime }));
   });
 }
+
+export const addLeadingZero = (number) => {
+  return number < 10 ? "0" + number : number.toString();
+};
+
+export const copyToClipboard = (text) => {
+  return new Promise((resolve, reject) => {
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        resolve();
+      })
+      .catch((err) => {
+        reject(err);
+      });
+  });
+};

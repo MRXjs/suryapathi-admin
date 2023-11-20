@@ -79,12 +79,46 @@ export const memberSearch = async (e) => {
   }
 };
 
-export const memberDelete = (id) => {
-  if (confirm("Are you sure you want to delete?")) {
-    console.log("member deleted!");
-  } else {
-    console.log("member was not deleted!");
+export const memberDelete = async (id, setData) => {
+  try {
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/member/delete`,
+      { id }
+    );
+    setData((previous) => {
+      return previous.filter((row) => row.id !== id);
+    });
+    toastSuccess(resp.data && resp.data.message);
+  } catch (error) {
+    toastError(error.message && error.message);
   }
 };
 
-export const memberUpdate = (id, data) => {};
+export const memberUpdate = (id, data) => {
+  console.log(id, data);
+};
+
+export const memberApprovalChange = async (id, status, setData) => {
+  try {
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/member/approve-status`,
+      JSON.stringify({ id, status })
+    );
+    setData((prevData) => {
+      const updatedData = prevData.map((row) => {
+        if (row.id == id) {
+          return {
+            ...row,
+            approvel_status: value,
+          };
+        }
+        return row;
+      });
+
+      return updatedData;
+    });
+    console.log(resp);
+  } catch (error) {
+    console.log(error);
+  }
+};

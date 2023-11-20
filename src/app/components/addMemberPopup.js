@@ -16,6 +16,7 @@ import {
 } from "@/DB/selecterOptions";
 import { memberCreate } from "../api/member";
 import { isOlderThan16 } from "../functions/functions";
+import BtnRed from "./BtnRed";
 
 const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
   const {
@@ -97,51 +98,57 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
               <div className="mt-8">
                 <span>උපන් දිනය</span>
                 <div className="grid grid-cols-3 gap-2">
-                  <input
-                    type="number"
-                    id="birthYear"
-                    name="birthYear"
-                    {...register("birthYear", {
-                      required: formValidations.birthDay.required.yearMessage,
-                      maxLength: 4,
-                      validate: (fieldValue) => isOlderThan16(fieldValue),
-                    })}
-                    placeholder="අවුරුද්ද"
-                    className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
-                  />
-                  <input
-                    type="number"
-                    id="birthMonth"
-                    name="birthMonth"
-                    {...register("birthMonth", {
-                      required: formValidations.birthDay.required.monthMessage,
-                      maxLength: 2,
-                    })}
-                    placeholder="මාසය"
-                    className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
-                  />
-                  <input
-                    type="number"
-                    id="birthDay"
-                    name="birthDay"
-                    {...register("birthDay", {
-                      required: formValidations.birthDay.required.dayMessage,
-                      maxLength: 2,
-                    })}
-                    placeholder="දිනය"
-                    className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
-                  />
+                  <div>
+                    <input
+                      type="number"
+                      id="birthYear"
+                      name="birthYear"
+                      {...register("birthYear", {
+                        required: formValidations.birthDay.required.yearMessage,
+                        maxLength: 4,
+                        validate: (fieldValue) => isOlderThan16(fieldValue),
+                      })}
+                      placeholder="අවුරුද්ද"
+                      className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="number"
+                      id="birthMonth"
+                      name="birthMonth"
+                      {...register("birthMonth", {
+                        required:
+                          formValidations.birthDay.required.monthMessage,
+                        maxLength: 2,
+                      })}
+                      placeholder="මාසය"
+                      className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
+                    />
+                  </div>
+                  <div>
+                    <input
+                      type="number"
+                      id="birthDay"
+                      name="birthDay"
+                      {...register("birthDay", {
+                        required: formValidations.birthDay.required.dayMessage,
+                        maxLength: 2,
+                      })}
+                      placeholder="දිනය"
+                      className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
+                    />
+                  </div>
                 </div>
-                {errors.birthYear ? (
-                  <FormError error={errors.birthYear.message} />
-                ) : null}
-                {errors.birthMonth || errors.birthDay ? (
+                {errors.birthYear || errors.birthMonth || errors.birthDay ? (
                   <FormError
-                    error={
-                      errors.birthMonth
-                        ? errors.birthMonth.message
-                        : errors.birthDay.message
-                    }
+                    error={` ${
+                      errors.birthYear ? errors.birthYear.message : ""
+                    } ${errors.birthMonth ? errors.birthMonth.message : ""} ${
+                      errors.birthDay
+                        ? errors.birthDay.message
+                        : "ඇතුලත් කරන්න "
+                    } `}
                   />
                 ) : null}
               </div>
@@ -153,7 +160,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                     id="heightFeet"
                     name="heightFeet"
                     {...register("heightFeet", {
-                      // required: formValidations.heightFeet.required.message,
+                      required: formValidations.heightFeet.required.message,
                     })}
                     placeholder="අඩි"
                     className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300 "
@@ -198,7 +205,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="nicNo"
                   name="nicNo"
                   {...register("nicNo", {
-                    // required: formValidations.nicNo.required.message,
+                    required: formValidations.nicNo.required.message,
                     pattern: {
                       value: formValidations.nicNo.pattern.stringPattern,
                       message: formValidations.nicNo.pattern.message,
@@ -216,7 +223,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="phoneNo"
                   name="phoneNo"
                   {...register("phoneNo", {
-                    // required: formValidations.phoneNo.required.message,
+                    required: formValidations.phoneNo.required.message,
                     pattern: {
                       value: formValidations.phoneNo.pattern.stringPattern,
                       message: formValidations.phoneNo.pattern.message,
@@ -234,9 +241,9 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="nation"
                   name="nation"
                   {...register("nation", {
-                    // validate: (fieldValue) => {
-                    //   return fieldValue !== "0" || "ජාතිය";
-                    // },
+                    validate: (fieldValue) => {
+                      return fieldValue !== "0" || "ජාතිය";
+                    },
                   })}
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
                 >
@@ -251,9 +258,9 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="religion"
                   name="religion"
                   {...register("religion", {
-                    // validate: (fieldValue) => {
-                    //   return fieldValue !== "0" || "ආගම";
-                    // },
+                    validate: (fieldValue) => {
+                      return fieldValue !== "0" || "ආගම";
+                    },
                   })}
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
                 >
@@ -268,9 +275,9 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="caste"
                   name="caste"
                   {...register("caste", {
-                    // validate: (fieldValue) => {
-                    //   return fieldValue !== "0" || "කුලය";
-                    // },
+                    validate: (fieldValue) => {
+                      return fieldValue !== "0" || "කුලය";
+                    },
                   })}
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
                 >
@@ -283,7 +290,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
               </div>
               {errors.nation || errors.religion || errors.caste ? (
                 <FormError
-                  error={`ඔබේ ${errors.nation ? errors.nation.message : ""} ${
+                  error={` ${errors.nation ? errors.nation.message : ""} ${
                     errors.religion ? errors.religion.message : ""
                   } ${errors.caste ? errors.caste.message : ""} තෝරාගන්න`}
                 />
@@ -315,7 +322,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="address"
                   name="address"
                   {...register("address", {
-                    // required: formValidations.address.required.message,
+                    required: formValidations.address.required.message,
                   })}
                   placeholder="ස්තීර ලිපිනය"
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
@@ -372,9 +379,9 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
                   id="monthlyIncome"
                   name="monthlyIncome"
                   {...register("monthlyIncome", {
-                    // validate: (fieldValue) => {
-                    //   return fieldValue !== "0" || " මාසික ආදායම ";
-                    // },
+                    validate: (fieldValue) => {
+                      return fieldValue !== "0" || " මාසික ආදායම ";
+                    },
                   })}
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
                 >
@@ -387,23 +394,30 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
               </div>
               {errors.maritalState || errors.monthlyIncome ? (
                 <FormError
-                  error={`ඔබේ ${
+                  error={`${
                     errors.maritalState ? errors.maritalState.message : ""
                   } ${
                     errors.monthlyIncome ? errors.monthlyIncome.message : ""
                   } තෝරාගන්න.`}
                 />
               ) : null}
-              <div className="mt-8">
+              <div className="grid grid-cols-2 gap-5 mt-10">
                 <button
                   id="submitBtn"
                   name="submitBtn"
-                  className="w-full py-3 font-bold text-center text-white bg-purple-500 rounded-lg"
+                  className="py-3 mb-2 mr-2 font-bold text-center text-white bg-purple-500 rounded-lg hover:bg-purple-600 w-fullpx-5"
                   type="submit"
                   disabled={isLoading ? true : false}
                 >
-                  ලියපදින්චි වන්න
+                  Submit
                 </button>
+
+                <BtnRed
+                  text={"Clear"}
+                  onClick={() => {
+                    reset();
+                  }}
+                />
               </div>
             </form>
           </div>

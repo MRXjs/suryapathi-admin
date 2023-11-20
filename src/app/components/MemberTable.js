@@ -9,7 +9,11 @@ import {
 } from "@tanstack/react-table";
 import Image from "next/image";
 import { useEffect, useState } from "react";
-import { getAllMember, memberDelete } from "@/app/api/member";
+import {
+  getAllMember,
+  memberApprovalChange,
+  memberDelete,
+} from "@/app/api/member";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { FaPencil } from "react-icons/fa6";
 import MemberUpdatePopup from "./MemberUpdatePopup";
@@ -17,6 +21,7 @@ import {
   approvalStatus,
   castes,
   districts,
+  gender,
   maritalStatus,
   monthlyIncomes,
   nations,
@@ -25,14 +30,12 @@ import {
 } from "@/DB/selecterOptions";
 import {
   calculateAge,
-  getCasteValue,
-  getNationValue,
+  copyToClipboard,
   getOptionsValue,
-  getProfessionValue,
-  getReligionValue,
 } from "../functions/functions";
 import ReactPaginate from "react-paginate";
 import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
+import { toastSuccess } from "../functions/toast";
 
 const MemberTable = ({
   data,
@@ -40,7 +43,6 @@ const MemberTable = ({
   tableWFull,
   columnFilters,
   setIsLoading,
-  isLoading,
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -67,10 +69,13 @@ const MemberTable = ({
   };
 
   useEffect(() => {
+    setCurrentPage(0);
     fetchData(1);
   }, [columnFilters]);
 
-  // const searchHandler =  ()
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   const onChangePage = ({ selected }) => {
     setData([]);
@@ -78,20 +83,43 @@ const MemberTable = ({
     fetchData(selected + 1);
   };
 
-  const approvalHandler = (e) => {
-    setData((prevData) => {
-      const updatedData = prevData.map((row) => {
-        if (row.id == e.target.id) {
-          return {
-            ...row,
-            approvel_status: JSON.parse(e.target.value),
-          };
-        }
-        return row;
-      });
+  const approvalHandler = async (e) => {
+    const id = JSON.parse(e.target.id);
+    const value = JSON.parse(e.target.value);
+    await memberApprovalChange(id, value, setData);
+  };
 
-      return updatedData;
-    });
+  const rowCopyToClipBoard = async (row) => {
+    setIsLoading(true);
+    const text = `
+    නම : ${row.full_name}
+    උපන් දිනය : ${row.birthday}
+    වයස : ${calculateAge(row.birthday)}
+    ස්ත්‍රී/පුරුෂ බාවය : ${getOptionsValue(gender, row.gender)}
+    උස : අඩි ${row.feet} අඟල් ${row.inches}
+    විවාහක තත්ත්වය : ${getOptionsValue(maritalStatus, row.married_status)}
+    ජාතිය : ${getOptionsValue(nations, row.nation)}
+    ආගම : ${getOptionsValue(religions, row.religion)}
+    කුලය : ${getOptionsValue(castes, row.caste)}
+    රැකියාව : ${getOptionsValue(professions, row.job)}
+    මාසික ආදායම : ${getOptionsValue(monthlyIncomes, row.salary)}
+    දිස්ත්‍රීකය : ${getOptionsValue(districts, row.district)}
+    ලිපිනය : ${row.address}
+    දුරකථන අංකය : ${row.phone}
+    පින්තුර: ${row.profile_image_url}`;
+
+    await copyToClipboard(text)
+      .then(() => toastSuccess(`Member ID ${row.id} data copied successfully!`))
+      .catch((error) => console.log(error));
+    setIsLoading(false);
+  };
+
+  const rowDelete = async (id) => {
+    setIsLoading(true);
+    if (confirm("Are you sure you want to delete?")) {
+      await memberDelete(id, setData);
+    }
+    setIsLoading(false);
   };
 
   const columns = [
@@ -122,6 +150,10 @@ const MemberTable = ({
     columnHelper.accessor("age", {
       cell: (info) => <span>{calculateAge(info.row.original.birthday)}</span>,
       header: "Age",
+    }),
+    columnHelper.accessor("gender", {
+      cell: (info) => <span>{getOptionsValue(gender, info.getValue())}</span>,
+      header: "Gender",
     }),
     columnHelper.accessor("height", {
       cell: (info) => (
@@ -204,7 +236,7 @@ const MemberTable = ({
     columnHelper.accessor("", {
       cell: (info) => (
         <div className="flex items-center justify-center">
-          <button className="m-3">
+          <button className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
             <FaPencil
               size={25}
               color={
@@ -219,12 +251,22 @@ const MemberTable = ({
               }}
             />
           </button>
-          pppp
-          <button className="p-3">
+          <button
+            type="button"
+            className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+            onClick={() => {
+              rowCopyToClipBoard(info.row.original);
+            }}
+          >
+            Copy
+          </button>
+          <button className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
             <BsFillTrashFill
               size={25}
-              color="red"
-              onClick={() => memberDelete(0)}
+              color="white"
+              onClick={() => {
+                rowDelete(info.row.original.id);
+              }}
             />
           </button>
         </div>

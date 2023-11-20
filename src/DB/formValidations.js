@@ -9,9 +9,9 @@ export const formValidations = {
   },
   birthDay: {
     required: {
-      yearMessage: "උපන් දිනය ඇතුලත් කල යුතුයී.",
-      monthMessage: "උපන් දිනය ඇතුලත් කල යුතුයී.",
-      dayMessage: "උපන් දිනය ඇතුලත් කල යුතුයී.",
+      yearMessage: "උපන් අවුරුද්ද ඇතුලත් කල යුතුයී.",
+      monthMessage: "උපන් මාසය ඇතුලත් කල යුතුයී.",
+      dayMessage: "උපන් දවස ඇතුලත් කල යුතුයී.",
     },
   },
   heightFeet: { required: { message: "උස ඇතුලත් කල යුතුයි." } },
@@ -30,7 +30,12 @@ export const formValidations = {
     },
   },
   address: { required: { message: "ලිපිනය ඇතුලත් කල යුතුයී." } },
-  birthTime: { required: { message: "උපන් වේලාව ඇතුලත්කල යුතුයී." } },
+  birthTime: {
+    required: {
+      HourMessage: "උපන් පැය  ඇතුලත්කල යුතුයී.",
+      MinuteMessage: "උපන් විනාඩිය ඇතුලත්කල යුතුයී.",
+    },
+  },
   email: {
     required: { message: "ඔබේ විද්‍යුත් තැපැල් ලිපිනය ඇතුළත් කළ යුතුය." },
   },
