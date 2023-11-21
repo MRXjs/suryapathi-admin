@@ -13,6 +13,11 @@ const MemberManagement = () => {
   const [popups, setPopups] = useState({
     addMemberPopup: false,
   });
+  const [columnFilters, setColumnFilters] = useState({
+    memberApproval: "all",
+    payment_status: "all",
+    payment_method: "all",
+  });
 
   const openAddMember = () => {
     setPopups((prevValue) => ({
@@ -27,12 +32,6 @@ const MemberManagement = () => {
       ["addMemberPopup"]: false,
     }));
   };
-
-  const [columnFilters, setColumnFilters] = useState({
-    memberApproval: "all",
-    payment_status: "all",
-    payment_method: "all",
-  });
 
   return (
     <>

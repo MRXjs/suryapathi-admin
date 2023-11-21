@@ -47,7 +47,6 @@ const MemberTable = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
-  const [globalFilter, setGlobalFilter] = useState("");
   const columnHelper = createColumnHelper();
   const [isMemberUpdatePopup, setIsMemberUpdatePopup] = useState(false);
   const [currentRow, setCurrentRow] = useState({});
@@ -72,10 +71,6 @@ const MemberTable = ({
     setCurrentPage(0);
     fetchData(1);
   }, [columnFilters]);
-
-  useEffect(() => {
-    console.log(data);
-  }, [data]);
 
   const onChangePage = ({ selected }) => {
     setData([]);
@@ -123,6 +118,10 @@ const MemberTable = ({
   };
 
   const columns = [
+    columnHelper.accessor("", {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Column Number",
+    }),
     columnHelper.accessor("profile_image_url", {
       cell: (info) => (
         <Image

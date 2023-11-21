@@ -8,58 +8,86 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import fetchedData from "@/DB/proposalReq.json";
 import { paymentStatus, reqStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { astroReqDelete } from "../api/astroReq";
 import { FcApproval, FcHighPriority } from "react-icons/fc";
+import {
+  getAllProposalReq,
+  proposalReqCompleteStateChange,
+  proposalReqDelete,
+  proposalReqPaymentStatusChange,
+} from "../api/proposalReq";
+import ReactPaginate from "react-paginate";
+import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
+import { weddingServicePricingPlans } from "@/DB/pricingPlans";
 
-const ProposalReqTable = ({ searchTerm, tableWFull }) => {
-  const [globalFilter, setGlobalFilter] = useState("");
+const ProposalReqTable = ({
+  setIsLoading,
+  isLoading,
+  setData,
+  data,
+  columnFilters,
+  tableWFull,
+}) => {
   const columnHelper = createColumnHelper();
-  const [data, setData] = useState(() => [...fetchedData]);
 
-  const paymentStatusHandler = (e) => {
-    setData((prevData) => {
-      const updatedData = prevData.map((row) => {
-        if (row.id == e.target.id) {
-          return {
-            ...row,
-            payment_status: JSON.parse(e.target.value),
-          };
-        }
-        return row;
-      });
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
 
-      return updatedData;
-    });
-  };
-
-  const statusHandler = (e) => {
-    setData((prevData) => {
-      const updatedData = prevData.map((row) => {
-        if (row.id == e.target.id) {
-          return {
-            ...row,
-            status: JSON.parse(e.target.value),
-          };
-        }
-        return row;
-      });
-
-      return updatedData;
-    });
+  // fetchData
+  const fetchData = async (pg) => {
+    setIsLoading(true);
+    const resp = await getAllProposalReq(pg, columnFilters);
+    const tempArray = resp.rows.map((row) =>
+      row.approvel_status === null ? { ...row, approvel_status: false } : row
+    );
+    console.log(tempArray);
+    setData(tempArray);
+    setPageCount(Math.ceil(resp.count / 10));
+    setIsLoading(false);
+    try {
+    } catch (error) {
+      return null;
+    }
   };
 
   useEffect(() => {
-    console.log(data);
-  }, [data]);
+    setCurrentPage(0);
+    fetchData(1);
+  }, [columnFilters]);
+
+  const onChangePage = ({ selected }) => {
+    setData([]);
+    setCurrentPage(selected);
+    fetchData(selected + 1);
+  };
+
+  const rowDelete = async (id) => {
+    setIsLoading(true);
+    if (confirm("Are you sure you want to delete?")) {
+      await proposalReqDelete(id, setData);
+    }
+    setIsLoading(false);
+  };
+
+  const paymentStatusHandler = async (e) => {
+    setIsLoading(true);
+    await proposalReqPaymentStatusChange(e, data, setData);
+    setIsLoading(false);
+  };
+
+  const statusHandler = async (e) => {
+    setIsLoading(true);
+    await proposalReqCompleteStateChange(e, data, setData);
+    setIsLoading(false);
+  };
 
   const columns = [
-    columnHelper.accessor("status", {
+    columnHelper.accessor("showStatus", {
       cell: (info) => (
         <span>
-          {info.renderValue() ? (
+          {info.row.original.status ? (
             <div className=" animate-pulse">
               <FcApproval size={35} />
             </div>
@@ -76,21 +104,45 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "ID",
     }),
-    columnHelper.accessor("full_name", {
-      cell: (info) => <span>{info.getValue()}</span>,
+    columnHelper.accessor("fullName", {
+      cell: (info) => (
+        <span>{`${info.row.original.first_name} ${info.row.original.last_name}`}</span>
+      ),
       header: "Name",
     }),
     columnHelper.accessor("phone", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Phone Number",
     }),
+    columnHelper.accessor("email", {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Email",
+    }),
     columnHelper.accessor("description", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Description",
     }),
-    columnHelper.accessor("service", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Service",
+    columnHelper.accessor("package_type", {
+      cell: (info) => (
+        <span>
+          {weddingServicePricingPlans.map((plan) => (
+            <div key={plan.id}>{plan.id === info.getValue() && plan.title}</div>
+          ))}
+        </span>
+      ),
+      header: "Selected Package",
+    }),
+    columnHelper.accessor("selected_members", {
+      cell: (info) => (
+        <div>
+          {JSON.parse(info.getValue()).map((item, index) => (
+            <span className="mx-2" key={index}>
+              {`${item} `}
+            </span>
+          ))}
+        </div>
+      ),
+      header: "Selected Members",
     }),
     columnHelper.accessor("payment_status", {
       cell: (info) => (
@@ -117,6 +169,33 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
       ),
       header: "Payment status",
     }),
+
+    columnHelper.accessor("payment_method", {
+      cell: (info) => (
+        <span>{info.getValue() ? "Online" : "Bank Transfer"}</span>
+      ),
+      header: "Payment method",
+    }),
+    columnHelper.accessor("transaction_id", {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Transaction Id",
+    }),
+    columnHelper.accessor("", {
+      cell: (info) => (
+        <div className="flex items-center justify-start">
+          <button className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
+            <BsFillTrashFill
+              size={25}
+              color="white"
+              onClick={() => {
+                rowDelete(info.row.original.id);
+              }}
+            />
+          </button>
+        </div>
+      ),
+      header: "Actions",
+    }),
     columnHelper.accessor("status", {
       cell: (info) => (
         <select
@@ -140,42 +219,15 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
       ),
       header: "Status",
     }),
-    columnHelper.accessor("payment_method", {
-      cell: (info) => (
-        <span>{info.getValue() ? "Online" : "Bank Transfer"}</span>
-      ),
-      header: "Payment method",
-    }),
-    columnHelper.accessor("", {
-      cell: (info) => (
-        <div className="flex items-center justify-start">
-          <button className="p-3">
-            <BsFillTrashFill
-              size={25}
-              color="red"
-              onClick={() => astroReqDelete(0)}
-            />
-          </button>
-        </div>
-      ),
-      header: "Actions",
-    }),
   ];
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      globalFilter,
-    },
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
-
-  useEffect(() => {
-    setGlobalFilter(searchTerm);
-  }, [searchTerm]);
 
   return (
     <>
@@ -226,57 +278,24 @@ const ProposalReqTable = ({ searchTerm, tableWFull }) => {
         </table>
         {/* pagination */}
         <div className="fixed bottom-0 left-0 z-0 w-full bg-white ">
-          <div className="flex items-center justify-end gap-2 my-5">
-            <button
-              onClick={() => {
-                table.previousPage();
-              }}
-              disabled={!table.getCanPreviousPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {"<"}
-            </button>
-            <button
-              onClick={() => {
-                table.nextPage();
-              }}
-              disabled={!table.getCanNextPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {">"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div>page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1">
-              Go to page:{" "}
-              <input
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="w-16 p-1 bg-transparent border rounded"
-              />
-            </span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              className="p-2 bg-transparent "
-            >
-              {[5, 10, 20, 30, 50, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-end gap-2 my-5 mr-5 ">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel={<GrLinkNext size={20} />}
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={1}
+              previousLabel={<GrLinkPrevious size={20} />}
+              pageCount={pageCount}
+              onPageChange={onChangePage}
+              containerClassName={"h-[50px] flex items-center "}
+              pageLinkClassName={
+                "px-2 sm:px-5 py-1 sm:py-2  m-[8px] rounded-[5px] border-2 border-solid border-black hover:bg-black hover:text-white transition duration-300"
+              }
+              activeClassName={
+                "bg-black text-white  py-3  m-[8px] rounded-[5px]"
+              }
+              forcePage={currentPage}
+            />
           </div>
         </div>
       </div>

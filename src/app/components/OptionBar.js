@@ -10,6 +10,7 @@ const OptionBar = ({
   setIsLoading,
   isLoading,
   member,
+  proposal,
   fullWidth,
   setColumnFilters,
   columnFilters,
@@ -94,13 +95,17 @@ const OptionBar = ({
         </>
       ) : null}
 
-      <div className="flex items-center ml-10 ">
-        <Search
-          setData={setData}
-          setIsLoading={setIsLoading}
-          isLoading={isLoading}
-        />
-      </div>
+      {member ? (
+        <div className="flex items-center ml-10 ">
+          <Search
+            setData={setData}
+            setIsLoading={setIsLoading}
+            isLoading={isLoading}
+            member={member}
+            proposal={proposal}
+          />
+        </div>
+      ) : null}
       <div className="mt-2 ml-10">
         <BtnPrimary text={<IoIosRefresh />} onClick={resetFormAndFilters} />
       </div>

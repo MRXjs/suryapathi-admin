@@ -3,13 +3,21 @@ import { searchOption } from "@/DB/selecterOptions";
 import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { memberSearch } from "../api/member";
+import { proposalReqSearch } from "../api/proposalReq";
 
-const Search = ({ setData, refresh, setIsLoading, isLoading }) => {
+const Search = ({ setData, setIsLoading, member, proposal }) => {
   const searchFormSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
-    const searchResp = await memberSearch(e);
-    setData(searchResp.rows);
+    if (member) {
+      const searchResp = await memberSearch(e);
+      setData(searchResp.rows);
+    }
+
+    if (proposal) {
+      const searchResp = await proposalReqSearch(e);
+      // setData(searchResp.rows);
+    }
     setIsLoading(false);
   };
 
@@ -22,7 +30,13 @@ const Search = ({ setData, refresh, setIsLoading, isLoading }) => {
             className="block p-2.5 z-20 text-sm text-gray-900 bg-gray-50  border-s-gray-50 border-s-2 border border-gray-300 focus:ring-blue-500 border-l-2"
           >
             {searchOption.map((item, index) => (
-              <option key={index} value={item.value}>
+              <option
+                key={index}
+                value={item.value}
+                className={`${
+                  !member ? (item.value == "nic" ? "hidden" : "") : ""
+                }`}
+              >
                 {item.text}
               </option>
             ))}
