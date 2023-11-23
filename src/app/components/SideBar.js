@@ -14,18 +14,20 @@ import { BsFillEnvelopePaperHeartFill, BsPersonHearts } from "react-icons/Bs";
 
 const SideBar = ({ tableWFull }) => {
   const router = useRouter();
-  const pathName = usePathname();
+  const path = usePathname();
+  const [pathName, setPathName] = useState(path);
   const [sideBarOpen, setSideBarOpen] = useState(true);
+
   const Menus = [
     { title: "Member Management", icon: <MdManageAccounts />, url: "/" },
     {
       title: "Proposal Request",
       icon: <BsFillEnvelopePaperHeartFill />,
-      url: "/proposalreq",
+      url: "/proposalreq/",
     },
-    { title: "Astrology Requests", icon: <FaSun />, url: "/astrologyreq" },
-    { title: "Baby Name Requests", icon: <LuBaby />, url: "/babynamereq" },
-    { title: "Log Out", icon: <BiLogOutCircle />, url: "/auth" },
+    { title: "Astrology Requests", icon: <FaSun />, url: "/astrologyreq/" },
+    { title: "Baby Name Requests", icon: <LuBaby />, url: "/babynamereq/" },
+    { title: "Log Out", icon: <BiLogOutCircle />, url: "/auth/" },
   ];
 
   const sideBarController = () => {

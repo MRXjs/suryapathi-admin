@@ -30,8 +30,10 @@ const OptionBar = ({
       payment_status: "all",
       payment_method: "all",
     });
-    const form = document.querySelector("#searchForm");
-    form.reset();
+    if (member) {
+      const form = document.querySelector("#searchForm");
+      form.reset();
+    }
   };
 
   return (
@@ -74,7 +76,9 @@ const OptionBar = ({
         <>
           <div className="flex items-center ml-10">
             <select
-              value={"all"}
+              name="payment_status"
+              value={columnFilters.payment_status}
+              onChange={filterOnChangeHandler}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
               <option value={0}>Unpaid</option>
@@ -84,11 +88,13 @@ const OptionBar = ({
           </div>
           <div className="flex items-center ml-10">
             <select
-              value={"all"}
+              name="payment_method"
+              value={columnFilters.payment_method}
+              onChange={filterOnChangeHandler}
               className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
             >
-              <option value={0}>Online</option>
-              <option value={1}>Bank Transfer</option>
+              <option value={0}>Bank Transfer</option>
+              <option value={1}>Online</option>
               <option value={"all"}>Online & Bank Transfer </option>
             </select>
           </div>

@@ -7,6 +7,11 @@ export const getAllProposalReq = async (pageNumber, columnFilters) => {
     if (columnFilters.payment_status !== "all") {
       params.append("payment_status", columnFilters.payment_status);
     }
+
+    if (columnFilters.payment_method !== "all") {
+      params.append("payment_method", columnFilters.payment_method);
+    }
+
     const resp = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/proposal/all/${pageNumber}?${params}`
     );

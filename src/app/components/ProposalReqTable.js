@@ -21,6 +21,8 @@ import {
 import ReactPaginate from "react-paginate";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import { weddingServicePricingPlans } from "@/DB/pricingPlans";
+import PhoneNumber from "./PhoneNumber";
+import { toastError } from "../functions/toast";
 
 const ProposalReqTable = ({
   setIsLoading,
@@ -37,18 +39,14 @@ const ProposalReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    setIsLoading(true);
-    const resp = await getAllProposalReq(pg, columnFilters);
-    const tempArray = resp.rows.map((row) =>
-      row.approvel_status === null ? { ...row, approvel_status: false } : row
-    );
-    console.log(tempArray);
-    setData(tempArray);
-    setPageCount(Math.ceil(resp.count / 10));
-    setIsLoading(false);
     try {
+      setIsLoading(true);
+      const resp = await getAllProposalReq(pg, columnFilters);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
     } catch (error) {
-      return null;
+      toastError(error);
     }
   };
 
@@ -111,7 +109,7 @@ const ProposalReqTable = ({
       header: "Name",
     }),
     columnHelper.accessor("phone", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <PhoneNumber info={info} />,
       header: "Phone Number",
     }),
     columnHelper.accessor("email", {

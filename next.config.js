@@ -5,6 +5,7 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  crossOrigin: "anonymous",
 };
 
 module.exports = nextConfig;

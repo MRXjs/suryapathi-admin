@@ -29,6 +29,13 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
     setRow({ ...row, [e.target.name]: e.target.value });
   };
 
+  const avatarOnChangeHandler = (e) => {
+    setRow({
+      ...row,
+      profile_image_url: URL.createObjectURL(e.target.files[0]),
+    });
+  };
+
   if (!open) return null;
   return (
     <div
@@ -45,12 +52,19 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
         {/* close btn */}
         <p
           onClick={onClose}
-          className="fixed text-3xl cursor-pointer top-5   text-[#b83737] hover:text-[#ff6060] "
+          className="fixed text-3xl cursor-pointer top-5   text-[#b83737] hover:text-[#ff6060]"
         >
           X
         </p>
-        <div className="flex justify-center">
+        <div className="flex flex-col items-center justify-center mt-10">
           <Avatar img={row.profile_image_url} />
+          <input
+            id="profile_image_url"
+            name="profile_image_url"
+            type="file"
+            onChange={avatarOnChangeHandler}
+            className="w-1/2 px-4 py-2 mt-5 rounded-md outline-none cursor-pointer ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
+          />
         </div>
         {/* content */}
         <div className="flex flex-col items-start justify-center m-10 ">

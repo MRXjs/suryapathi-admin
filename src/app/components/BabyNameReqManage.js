@@ -3,26 +3,46 @@ import React, { useState } from "react";
 import SideBar from "./SideBar";
 import OptionBar from "./OptionBar";
 import BabyNameReqTable from "./BabyNameReqTable";
+import LoadingScreen from "./LoadingScreen";
 
 const BabyNameReqManage = () => {
+  const [isLoading, setIsLoading] = useState(false);
+  const [data, setData] = useState([]);
   const [tableWFull, setTableWFull] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [columnFilters, setColumnFilters] = useState({
+    memberApproval: "all",
+    payment_status: "all",
+    payment_method: "all",
+  });
 
   return (
-    <div>
-      <SideBar
-        tableWFull={(value) => {
-          setTableWFull(value);
-        }}
-      />
-      <OptionBar
-        setSearchTerm={(value) => setSearchTerm(value)}
-        fullWidth={tableWFull}
-      />
-      <div className="mt-20">
-        <BabyNameReqTable searchTerm={searchTerm} tableWFull={tableWFull} />
+    <>
+      {isLoading ? <LoadingScreen /> : null}
+      <div>
+        <SideBar
+          tableWFull={(value) => {
+            setTableWFull(value);
+          }}
+        />
+        <OptionBar
+          setIsLoading={setIsLoading}
+          fullWidth={tableWFull}
+          setColumnFilters={(values) => setColumnFilters(values)}
+          columnFilters={columnFilters}
+          setData={setData}
+          babyName={true}
+        />
+        <div className="mt-20">
+          <BabyNameReqTable
+            setIsLoading={setIsLoading}
+            setData={setData}
+            data={data}
+            columnFilters={columnFilters}
+            tableWFull={tableWFull}
+          />
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

@@ -1,7 +1,7 @@
 const FormError = ({ error }) => {
   return (
     <div
-      className="flex items-center p-1 mt-1 font-semibold text-red-800 transition-all duration-300 rounded-lg  min-h-w-2/1 bg-red-50 dark:text-red-400"
+      className="flex items-center p-1 mt-1 font-semibold text-red-800 transition-all duration-300 rounded-lg min-h-w-2/1 bg-red-50 dark:text-red-400"
       role="alert"
     >
       <svg

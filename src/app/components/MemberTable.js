@@ -31,11 +31,13 @@ import {
 import {
   calculateAge,
   copyToClipboard,
+  downloadImage,
   getOptionsValue,
 } from "../functions/functions";
 import ReactPaginate from "react-paginate";
 import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
-import { toastSuccess } from "../functions/toast";
+import { toastError, toastSuccess } from "../functions/toast";
+import PhoneNumber from "./PhoneNumber";
 
 const MemberTable = ({
   data,
@@ -53,17 +55,14 @@ const MemberTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    setIsLoading(true);
-    const resp = await getAllMember(pg, columnFilters);
-    const tempArray = resp.rows.map((row) =>
-      row.approvel_status === null ? { ...row, approvel_status: false } : row
-    );
-    setData(tempArray);
-    setPageCount(Math.ceil(resp.count / 10));
-    setIsLoading(false);
     try {
+      setIsLoading(true);
+      const resp = await getAllMember(pg, columnFilters);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
     } catch (error) {
-      return null;
+      toastError(error);
     }
   };
 
@@ -118,10 +117,6 @@ const MemberTable = ({
   };
 
   const columns = [
-    columnHelper.accessor("", {
-      cell: (info) => <span>{info.getValue()}</span>,
-      header: "Column Number",
-    }),
     columnHelper.accessor("profile_image_url", {
       cell: (info) => (
         <Image
@@ -165,7 +160,7 @@ const MemberTable = ({
       header: "NIC",
     }),
     columnHelper.accessor("phone", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <PhoneNumber info={info} />,
       header: "Phone Number",
     }),
     columnHelper.accessor("nation", {
@@ -258,6 +253,20 @@ const MemberTable = ({
             }}
           >
             Copy
+          </button>
+          <button
+            onClick={() => {
+              setIsLoading(true);
+              downloadImage(
+                info.row.original.profile_image_url,
+                info.row.original.full_name
+              );
+              setIsLoading(false);
+            }}
+            type="button"
+            class="text-white bg-purple-700 hover:bg-purple-800 focus:outline-none focus:ring-4 focus:ring-purple-300 font-medium rounded-full text-sm px-5 py-2.5 text-center mb-2 dark:bg-purple-600 dark:hover:bg-purple-700 dark:focus:ring-purple-900 me-2"
+          >
+            Download
           </button>
           <button className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
             <BsFillTrashFill

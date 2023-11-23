@@ -1,3 +1,5 @@
+import { toastError } from "./toast";
+
 export const calculateAge = (dateOfBirth) => {
   const today = new Date();
   const birthDate = new Date(dateOfBirth);
@@ -72,4 +74,23 @@ export const copyToClipboard = (text) => {
         reject(err);
       });
   });
+};
+
+export const downloadImage = (url, filename) => {
+  try {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  } catch (error) {
+    toastError(error);
+  }
+};
+
+export const removeCountryCode = (inputString) => {
+  const stringWithoutZero = inputString.replace(/0/g, "");
+  const stringWithoutPlus94 = stringWithoutZero.replace(/\+94/g, "");
+  return stringWithoutPlus94;
 };

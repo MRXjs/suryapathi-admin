@@ -8,13 +8,46 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
-import data from "@/DB/babyNameReq.json";
 import { districts, paymentStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
+import { getAllBabyNameReq } from "../api/babyNameReq";
+import { toastError } from "../functions/toast";
 
-const BabyNameReqTable = ({ searchTerm, tableWFull }) => {
-  const [globalFilter, setGlobalFilter] = useState("");
+const BabyNameReqTable = ({
+  setIsLoading,
+  setData,
+  data,
+  columnFilters,
+  tableWFull,
+}) => {
   const columnHelper = createColumnHelper();
+
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+
+  // fetchData
+  const fetchData = async (pg) => {
+    try {
+      setIsLoading(true);
+      const resp = await getAllBabyNameReq(pg, columnFilters);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
+    } catch (error) {
+      toastError(error);
+    }
+  };
+
+  useEffect(() => {
+    setCurrentPage(0);
+    fetchData(1);
+  }, [columnFilters]);
+
+  const onChangePage = ({ selected }) => {
+    setData([]);
+    setCurrentPage(selected);
+    fetchData(selected + 1);
+  };
 
   const columns = [
     columnHelper.accessor("id", {
@@ -92,11 +125,13 @@ const BabyNameReqTable = ({ searchTerm, tableWFull }) => {
     columnHelper.accessor("", {
       cell: (info) => (
         <div className="flex items-center justify-start">
-          <button className="p-3">
+          <button className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
             <BsFillTrashFill
               size={25}
-              color="red"
-              onClick={() => astroReqDelete(0)}
+              color="white"
+              onClick={() => {
+                rowDelete(info.row.original.id);
+              }}
             />
           </button>
         </div>
@@ -105,16 +140,9 @@ const BabyNameReqTable = ({ searchTerm, tableWFull }) => {
     }),
   ];
 
-  useEffect(() => {
-    setGlobalFilter(searchTerm);
-  }, [searchTerm]);
-
   const table = useReactTable({
     data,
     columns,
-    state: {
-      globalFilter,
-    },
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),

@@ -8,39 +8,125 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { data } from "@/DB/astrologyReq.js";
-import { paymentStatus } from "@/DB/selecterOptions";
+import { paymentStatus, reqStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
-import { astroReqDelete } from "../api/astroReq";
+import {
+  astroReqDelete,
+  astrologyReqCompleteStateChange,
+  astrologyReqPaymentStatusChange,
+  getAllAstrologyReq,
+} from "../api/astroReq";
+import { FcApproval, FcHighPriority } from "react-icons/fc";
+import ReactPaginate from "react-paginate";
+import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
+import PhoneNumber from "./PhoneNumber";
+import { toastError } from "../functions/toast";
 
-const AstrologyReqTable = ({ searchTerm, tableWFull }) => {
-  const [globalFilter, setGlobalFilter] = useState("");
+const AstrologyReqTable = ({
+  setIsLoading,
+  data,
+  setData,
+  columnFilters,
+  tableWFull,
+}) => {
   const columnHelper = createColumnHelper();
 
+  const [currentPage, setCurrentPage] = useState(0);
+  const [pageCount, setPageCount] = useState(0);
+
+  // fetchData
+  const fetchData = async (pg) => {
+    try {
+      setIsLoading(true);
+      const resp = await getAllAstrologyReq(pg, columnFilters);
+      console.log(resp);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
+    } catch (error) {
+      toastError(error);
+    }
+  };
+
+  useEffect(() => {
+    setCurrentPage(0);
+    fetchData(1);
+  }, [columnFilters]);
+
+  const onChangePage = ({ selected }) => {
+    setData([]);
+    setCurrentPage(selected);
+    fetchData(selected + 1);
+  };
+
+  const rowDelete = async (id) => {
+    setIsLoading(true);
+    if (confirm("Are you sure you want to delete?")) {
+      await astroReqDelete(id, setData);
+    }
+    setIsLoading(false);
+  };
+
+  const paymentStatusHandler = async (e) => {
+    setIsLoading(true);
+    await astrologyReqPaymentStatusChange(e, data, setData);
+    setIsLoading(false);
+  };
+
+  const statusHandler = async (e) => {
+    setIsLoading(true);
+    await astrologyReqCompleteStateChange(e, data, setData);
+    setIsLoading(false);
+  };
+
   const columns = [
+    columnHelper.accessor("showStatus", {
+      cell: (info) => (
+        <span>
+          {info.row.original.status ? (
+            <div className=" animate-pulse">
+              <FcApproval size={35} />
+            </div>
+          ) : (
+            <div className=" animate-pulse">
+              <FcHighPriority size={35} />
+            </div>
+          )}
+        </span>
+      ),
+      header: "",
+    }),
     columnHelper.accessor("id", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "ID",
     }),
-    columnHelper.accessor("name", {
-      cell: (info) => <span>{info.getValue()}</span>,
+    columnHelper.accessor("fullName", {
+      cell: (info) => (
+        <span>{`${info.row.original.first_name} ${info.row.original.last_name}`}</span>
+      ),
       header: "Name",
     }),
     columnHelper.accessor("phone", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <PhoneNumber info={info} />,
       header: "Phone Number",
+    }),
+    columnHelper.accessor("email", {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Email",
     }),
     columnHelper.accessor("description", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Description",
     }),
-    columnHelper.accessor("service", {
+    columnHelper.accessor("package_type", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Service",
     }),
     columnHelper.accessor("payment_status", {
       cell: (info) => (
         <select
+          id={info.row.original.id}
+          onChange={paymentStatusHandler}
           value={info.getValue()}
           className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
             info.getValue() ? "!text-green-400 font-bold" : ""
@@ -67,36 +153,60 @@ const AstrologyReqTable = ({ searchTerm, tableWFull }) => {
       ),
       header: "Payment method",
     }),
+    columnHelper.accessor("transaction_id", {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "Transaction Id",
+    }),
     columnHelper.accessor("", {
       cell: (info) => (
         <div className="flex items-center justify-start">
-          <button className="p-3">
+          <button className="text-white bg-red-700 hover:bg-red-800 focus:outline-none focus:ring-4 focus:ring-red-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-900">
             <BsFillTrashFill
               size={25}
-              color="red"
-              onClick={() => astroReqDelete(0)}
+              color="white"
+              onClick={() => {
+                rowDelete(info.row.original.id);
+              }}
             />
           </button>
         </div>
       ),
       header: "Actions",
     }),
+    columnHelper.accessor("status", {
+      cell: (info) => (
+        <select
+          id={info.row.original.id}
+          onChange={statusHandler}
+          value={info.getValue()}
+          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+            info.getValue() ? "!text-green-400" : ""
+          }`}
+        >
+          {reqStatus.map((state, index) => (
+            <option
+              key={index}
+              value={state.value}
+              className={`${state.value ? "text-green-400" : " text-red-500"}`}
+            >
+              {state.text}
+            </option>
+          ))}
+        </select>
+      ),
+      header: "Status",
+    }),
   ];
 
   const table = useReactTable({
     data,
     columns,
-    state: {
-      globalFilter,
-    },
     getFilteredRowModel: getFilteredRowModel(),
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  useEffect(() => {
-    setGlobalFilter(searchTerm);
-  }, [searchTerm]);
+  useEffect(() => {}, []);
 
   return (
     <>
@@ -131,9 +241,7 @@ const AstrologyReqTable = ({ searchTerm, tableWFull }) => {
                       <td
                         key={cell.id}
                         className={`px-3.5 py-2 ${
-                          row.original.payment_status
-                            ? " text-green-400 font-bold"
-                            : ""
+                          row.original.payment_status ? " text-green-400" : ""
                         }`}
                       >
                         {flexRender(
@@ -149,57 +257,24 @@ const AstrologyReqTable = ({ searchTerm, tableWFull }) => {
         </table>
         {/* pagination */}
         <div className="fixed bottom-0 left-0 z-0 w-full bg-white ">
-          <div className="flex items-center justify-end gap-2 my-5">
-            <button
-              onClick={() => {
-                table.previousPage();
-              }}
-              disabled={!table.getCanPreviousPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {"<"}
-            </button>
-            <button
-              onClick={() => {
-                table.nextPage();
-              }}
-              disabled={!table.getCanNextPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {">"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div>page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1">
-              Go to page:{" "}
-              <input
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="w-16 p-1 bg-transparent border rounded"
-              />
-            </span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              className="p-2 bg-transparent "
-            >
-              {[5, 10, 20, 30, 50, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-end gap-2 my-5 mr-5 ">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel={<GrLinkNext size={20} />}
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={1}
+              previousLabel={<GrLinkPrevious size={20} />}
+              pageCount={pageCount}
+              onPageChange={onChangePage}
+              containerClassName={"h-[50px] flex items-center "}
+              pageLinkClassName={
+                "px-2 sm:px-5 py-1 sm:py-2  m-[8px] rounded-[5px] border-2 border-solid border-black hover:bg-black hover:text-white transition duration-300"
+              }
+              activeClassName={
+                "bg-black text-white  py-3  m-[8px] rounded-[5px]"
+              }
+              forcePage={currentPage}
+            />
           </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
 
-export const getAllAstrologyReq = async (pageNumber, columnFilters) => {
+export const getAllBabyNameReq = async (pageNumber, columnFilters) => {
   try {
     const params = new URLSearchParams();
     if (columnFilters.payment_status !== "all") {
@@ -13,7 +13,7 @@ export const getAllAstrologyReq = async (pageNumber, columnFilters) => {
     }
 
     const resp = await axios.get(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/astrology/all/${pageNumber}?${params}`
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/babyname/all/${pageNumber}?${params}`
     );
     return resp.data;
   } catch (error) {
@@ -22,10 +22,10 @@ export const getAllAstrologyReq = async (pageNumber, columnFilters) => {
   }
 };
 
-export const astroReqDelete = async (id, setData) => {
+export const babyNameReqDelete = async (id, setData) => {
   try {
     const resp = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/astrology/delete`,
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/babyname/delete`,
       { id }
     );
     setData((previous) => {
@@ -37,7 +37,7 @@ export const astroReqDelete = async (id, setData) => {
   }
 };
 
-export const astrologyReqPaymentStatusChange = async (e, data, setData) => {
+export const babyNameReqPaymentStatusChange = async (e, data, setData) => {
   const currentRow = data.find((row) => row.id == e.target.id);
   if (!currentRow) return;
 
@@ -49,7 +49,7 @@ export const astrologyReqPaymentStatusChange = async (e, data, setData) => {
 
   try {
     const resp = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/astrology/update`,
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/babyname/update`,
       sendData
     );
     setData((prevData) => {
@@ -71,7 +71,7 @@ export const astrologyReqPaymentStatusChange = async (e, data, setData) => {
   }
 };
 
-export const astrologyReqCompleteStateChange = async (e, data, setData) => {
+export const babyNameReqCompleteStateChange = async (e, data, setData) => {
   const currentRow = data.find((row) => row.id == e.target.id);
   if (!currentRow) return;
 
@@ -83,7 +83,7 @@ export const astrologyReqCompleteStateChange = async (e, data, setData) => {
 
   try {
     const resp = await axios.post(
-      `${process.env.NEXT_PUBLIC_API_URL}/admin/astrology/complete-status`,
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/babyname/complete-status`,
       sendData
     );
     setData((prevData) => {
