@@ -2,6 +2,7 @@ import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
 import { dataURItoFile } from "../functions/functions";
 
+// getAllMember
 export const getAllMember = async (pageNumber, columnFilters, globalFilter) => {
   try {
     const params = new URLSearchParams();
@@ -24,14 +25,28 @@ export const getAllMember = async (pageNumber, columnFilters, globalFilter) => {
   }
 };
 
-export const memberCreate = async (data) => {
+// memberCreate
+export const memberCreate = async (avatarEditorRef, data) => {
+  let avatar = null;
+  if (avatarEditorRef.current) {
+    const canvas = avatarEditorRef.current.getImageScaledToCanvas();
+    avatar = await new Promise((resolve) => {
+      canvas.toBlob((blob) => {
+        if (blob) {
+          const file = new File([blob], "avatar.jpeg", {
+            type: "image/jpeg",
+            lastModified: Date.now(),
+          });
+          resolve(file);
+        } else {
+          resolve(null);
+        }
+      });
+    });
+  }
+
   let formData = new FormData();
-
-  formData.append(
-    "image",
-    await dataURItoFile(localStorage.getItem("avatar"), `${data.name}.jpg`)
-  );
-
+  formData.append("image", avatar);
   formData.append("full_name", data.name);
   formData.append(
     "birthday",
@@ -67,6 +82,7 @@ export const memberCreate = async (data) => {
   }
 };
 
+// memberSearch
 export const memberSearch = async (e) => {
   try {
     const resp = await axios.get(
@@ -79,6 +95,7 @@ export const memberSearch = async (e) => {
   }
 };
 
+// memberDelete
 export const memberDelete = async (id, setData) => {
   try {
     const resp = await axios.post(
@@ -94,15 +111,65 @@ export const memberDelete = async (id, setData) => {
   }
 };
 
-export const memberUpdate = (id, data) => {
-  console.log(id, data);
+// memberUpdate
+export const memberUpdate = async (avatarEditorRef, row) => {
+  try {
+    let avatar = null;
+    if (avatarEditorRef.current) {
+      const canvas = avatarEditorRef.current.getImageScaledToCanvas();
+      avatar = await new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          if (blob) {
+            const file = new File([blob], "avatar.jpeg", {
+              type: "image/jpeg",
+              lastModified: Date.now(),
+            });
+            resolve(file);
+          } else {
+            resolve(null);
+          }
+        });
+      });
+    }
+
+    let formData = new FormData();
+    formData.append("image", avatar);
+    formData.append("id", row.id);
+    formData.append("full_name", row.full_name);
+    formData.append("birthday", row.birthday);
+    formData.append("phone", row.phone);
+    formData.append("nic", row.nic);
+    formData.append("feet", row.feet);
+    formData.append("inches", row.inches);
+    formData.append("nation", row.nation);
+    formData.append("religion", row.religion);
+    formData.append("caste", row.caste);
+    formData.append("married_status", row.married_status);
+    formData.append("address", row.address);
+    formData.append("district", row.district);
+    formData.append("job", row.job);
+    formData.append("salary", row.salary);
+    formData.append("gender", row.gender);
+
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/member/update`,
+      formData
+    );
+    toastSuccess(resp.data.message);
+  } catch (error) {
+    toastError(error.message && error.message);
+  }
 };
 
-export const memberApprovalChange = async (id, status, setData) => {
+// memberApprovalChange
+export const memberApprovalChange = async (e, setData) => {
   try {
+    const id = JSON.parse(e.target.id);
+    const value = JSON.parse(e.target.value);
+
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/member/approve-status`,
-      JSON.stringify({ id, status })
+      { id, status: value }
     );
     setData((prevData) => {
       const updatedData = prevData.map((row) => {
@@ -117,8 +184,8 @@ export const memberApprovalChange = async (id, status, setData) => {
 
       return updatedData;
     });
-    console.log(resp);
+    toastSuccess(resp.data.message);
   } catch (error) {
-    console.log(error);
+    toastError(error.message && error.message);
   }
 };

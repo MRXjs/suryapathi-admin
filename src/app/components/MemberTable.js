@@ -38,6 +38,7 @@ import ReactPaginate from "react-paginate";
 import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
 import { toastError, toastSuccess } from "../functions/toast";
 import PhoneNumber from "./PhoneNumber";
+import avatarLoader from "../../../public/avatar-loader.gif";
 
 const MemberTable = ({
   data,
@@ -49,8 +50,12 @@ const MemberTable = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
+  const [avatarLoading, setAvatarLoading] = useState(true);
+
   const columnHelper = createColumnHelper();
-  const [isMemberUpdatePopup, setIsMemberUpdatePopup] = useState(false);
+  const [popups, setPopups] = useState({
+    isMemberUpdatePopup: false,
+  });
   const [currentRow, setCurrentRow] = useState({});
 
   // fetchData
@@ -73,14 +78,15 @@ const MemberTable = ({
 
   const onChangePage = ({ selected }) => {
     setData([]);
+    setAvatarLoading(true);
     setCurrentPage(selected);
     fetchData(selected + 1);
   };
 
   const approvalHandler = async (e) => {
-    const id = JSON.parse(e.target.id);
-    const value = JSON.parse(e.target.value);
-    await memberApprovalChange(id, value, setData);
+    setIsLoading(true);
+    await memberApprovalChange(e, setData);
+    setIsLoading(false);
   };
 
   const rowCopyToClipBoard = async (row) => {
@@ -119,13 +125,24 @@ const MemberTable = ({
   const columns = [
     columnHelper.accessor("profile_image_url", {
       cell: (info) => (
-        <Image
-          alt={""}
-          src={info.getValue()}
-          width={50}
-          height={50}
-          className="object-cover w-10 h-10 rounded-full"
-        />
+        <div className="object-cover w-10 h-10 rounded-full cursor-pointer hover:animate-pulse">
+          <Image
+            className={`absolute  ${!avatarLoading ? "hidden" : ""}`}
+            src={avatarLoader}
+            width={50}
+            height={50}
+            alt="avatar loading"
+          />
+          <Image
+            alt={""}
+            src={info.getValue()}
+            width={50}
+            height={50}
+            onLoad={() => {
+              setAvatarLoading(false);
+            }}
+          />
+        </div>
       ),
       header: "Picture",
     }),
@@ -240,7 +257,7 @@ const MemberTable = ({
                   : "white"
               }
               onClick={() => {
-                setIsMemberUpdatePopup(true);
+                openUpdateMember();
                 setCurrentRow(info.row.original);
               }}
             />
@@ -291,15 +308,28 @@ const MemberTable = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
+  const openUpdateMember = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isMemberUpdatePopup"]: true,
+    }));
+  };
+
+  const closeUpdateMember = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isMemberUpdatePopup"]: false,
+    }));
+  };
+
   return (
     <>
-      {isMemberUpdatePopup ? (
-        <MemberUpdatePopup
-          open={isMemberUpdatePopup}
-          rowData={currentRow}
-          onClose={() => setIsMemberUpdatePopup(false)}
-        />
-      ) : null}
+      <MemberUpdatePopup
+        setIsLoading={setIsLoading}
+        open={popups.isMemberUpdatePopup}
+        currentRow={currentRow}
+        onClose={closeUpdateMember}
+      />
 
       <div
         className={`p-5 mb-16 ${tableWFull ? "ml-72" : "ml-20"} duration-300  `}

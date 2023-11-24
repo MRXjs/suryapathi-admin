@@ -83,7 +83,7 @@ const AstrologyReqTable = ({
     columnHelper.accessor("showStatus", {
       cell: (info) => (
         <span>
-          {info.row.original.status ? (
+          {info.row.original.complete_status ? (
             <div className=" animate-pulse">
               <FcApproval size={35} />
             </div>
@@ -107,7 +107,9 @@ const AstrologyReqTable = ({
       header: "Name",
     }),
     columnHelper.accessor("phone", {
-      cell: (info) => <PhoneNumber info={info} />,
+      cell: (info) => (
+        <PhoneNumber payment={info.row.original.payment_status} info={info} />
+      ),
       header: "Phone Number",
     }),
     columnHelper.accessor("email", {
@@ -173,14 +175,14 @@ const AstrologyReqTable = ({
       ),
       header: "Actions",
     }),
-    columnHelper.accessor("status", {
+    columnHelper.accessor("complete_status", {
       cell: (info) => (
         <select
           id={info.row.original.id}
           onChange={statusHandler}
           value={info.getValue()}
           className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
-            info.getValue() ? "!text-green-400" : ""
+            info.row.original.payment_status ? "!text-green-400" : ""
           }`}
         >
           {reqStatus.map((state, index) => (

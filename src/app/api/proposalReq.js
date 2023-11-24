@@ -82,7 +82,7 @@ export const proposalReqCompleteStateChange = async (e, data, setData) => {
   const newStatus = !currentRow.complete_status;
   const sendData = {
     id: currentRow.id,
-    complete_status: newStatus,
+    status: newStatus,
   };
 
   try {

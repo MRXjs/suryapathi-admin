@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import FormError from "./FormError";
 import Avatar from "./Avatar";
 import { useForm } from "react-hook-form";
@@ -19,6 +19,7 @@ import { isOlderThan16 } from "../functions/functions";
 import BtnRed from "./BtnRed";
 
 const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
+  const avatarEditorRef = useRef();
   const {
     register,
     control,
@@ -31,7 +32,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
   if (!open) return null;
   const formSubmitHandler = async (data) => {
     setIsLoading(true);
-    await memberCreate(data);
+    await memberCreate(avatarEditorRef, data);
     reset();
     setIsLoading(false);
   };
@@ -67,7 +68,10 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
               noValidate
             >
               <div className="flex flex-col items-center justify-center ">
-                <Avatar img={watch("avatar") ? watch("avatar")[0] : ""} />
+                <Avatar
+                  img={watch("avatar") ? watch("avatar")[0] : ""}
+                  editorRef={avatarEditorRef}
+                />
                 <input
                   id="avatar"
                   name="avatar"

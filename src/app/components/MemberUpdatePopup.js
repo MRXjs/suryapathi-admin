@@ -1,7 +1,11 @@
 "use client";
 import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import { calculateAge } from "../functions/functions";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  calculateAge,
+  imageUrlToFile,
+  isOlderThan16,
+} from "../functions/functions";
 import {
   castes,
   districts,
@@ -14,26 +18,41 @@ import {
 import BtnPrimary from "./BtnPrimary";
 import BtnRed from "./BtnRed";
 import Avatar from "./Avatar";
+import { memberUpdate } from "../api/member";
 
-const MemberUpdatePopup = ({ open, rowData, onClose }) => {
-  const [row, setRow] = useState(rowData);
+const MemberUpdatePopup = ({ setIsLoading, open, currentRow, onClose }) => {
+  const avatarEditorRef = useRef();
+  const [AvatarImg, setAvatarImg] = useState(null);
+
+  const [row, setRow] = useState({});
   useEffect(() => {
-    setRow(rowData);
-  }, [rowData]);
+    setRow(currentRow);
+  }, [currentRow]);
 
-  const resetAllFiled = () => {
-    setRow(rowData);
-  };
+  useEffect(() => {
+    setAvatarImg(null);
+  }, [onClose]);
 
   const handleChange = (e) => {
     setRow({ ...row, [e.target.name]: e.target.value });
   };
 
   const avatarOnChangeHandler = (e) => {
-    setRow({
-      ...row,
-      profile_image_url: URL.createObjectURL(e.target.files[0]),
-    });
+    // setRow({
+    //   ...row,
+    //   profile_image_url: URL.createObjectURL(e.target.files[0]),
+    // });
+    setAvatarImg(e.target.files[0]);
+  };
+
+  const resetAllFiled = () => {
+    setRow(currentRow);
+  };
+
+  const formSubmitHandler = async () => {
+    setIsLoading(true);
+    await memberUpdate(avatarEditorRef, row);
+    setIsLoading(false);
   };
 
   if (!open) return null;
@@ -57,7 +76,14 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
           X
         </p>
         <div className="flex flex-col items-center justify-center mt-10">
-          <Avatar img={row.profile_image_url} />
+          <Avatar
+            editorRef={avatarEditorRef}
+            img={
+              AvatarImg
+                ? URL.createObjectURL(AvatarImg)
+                : currentRow.profile_image_url
+            }
+          />
           <input
             id="profile_image_url"
             name="profile_image_url"
@@ -295,12 +321,7 @@ const MemberUpdatePopup = ({ open, rowData, onClose }) => {
         </div>
         {/* btn container */}
         <div className="flex items-center justify-center gap-5 mb-10 ">
-          <BtnPrimary
-            text={"Update"}
-            onClick={() => {
-              console.log("primaryBtnClicked!");
-            }}
-          />
+          <BtnPrimary text={"Update"} onClick={formSubmitHandler} />
           <BtnRed text={"Reset All Filed"} onClick={resetAllFiled} />
         </div>
       </div>

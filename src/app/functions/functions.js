@@ -94,3 +94,14 @@ export const removeCountryCode = (inputString) => {
   const stringWithoutPlus94 = stringWithoutZero.replace(/\+94/g, "");
   return stringWithoutPlus94;
 };
+
+export async function imageUrlToFile(imageUrl, fileName = "image.jpg") {
+  try {
+    const response = await fetch(imageUrl);
+    const blob = await response.blob();
+    return new File([blob], fileName, { type: blob.type });
+  } catch (error) {
+    console.error("Error converting image URL to file:", error);
+    return null;
+  }
+}
