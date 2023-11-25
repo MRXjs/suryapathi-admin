@@ -13,6 +13,7 @@ const ProposalReqManage = () => {
     memberApproval: "all",
     payment_status: "all",
     payment_method: "all",
+    complete_status: "all",
   });
 
   return (

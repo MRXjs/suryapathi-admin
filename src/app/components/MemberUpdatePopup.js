@@ -76,6 +76,7 @@ const MemberUpdatePopup = ({ setIsLoading, open, currentRow, onClose }) => {
           X
         </p>
         <div className="flex flex-col items-center justify-center mt-10">
+          <h2 className="mb-4 text-3xl text-center">යාවත්කාලින කිරීමේ පෝරමය</h2>
           <Avatar
             editorRef={avatarEditorRef}
             img={

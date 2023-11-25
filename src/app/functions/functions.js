@@ -1,3 +1,4 @@
+import { AstrologyServices } from "@/DB/astrologyService";
 import { toastError } from "./toast";
 
 export const calculateAge = (dateOfBirth) => {
@@ -20,6 +21,13 @@ export const getOptionsValue = (array, index) => {
     return array[index].value;
   }
   return null;
+};
+
+export const getAstrologyServicesValue = (id) => {
+  const service = AstrologyServices.map((item) =>
+    item.id == id ? item.title : ""
+  );
+  return service;
 };
 
 export const isOlderThan16 = (birthYear) => {

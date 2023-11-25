@@ -7,9 +7,11 @@ export const getAllBabyNameReq = async (pageNumber, columnFilters) => {
     if (columnFilters.payment_status !== "all") {
       params.append("payment_status", columnFilters.payment_status);
     }
-
     if (columnFilters.payment_method !== "all") {
       params.append("payment_method", columnFilters.payment_method);
+    }
+    if (columnFilters.complete_status !== "all") {
+      params.append("complete_status", columnFilters.complete_status);
     }
 
     const resp = await axios.get(

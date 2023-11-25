@@ -12,6 +12,8 @@ const MemberManagement = () => {
   const [data, setData] = useState([]);
   const [popups, setPopups] = useState({
     addMemberPopup: false,
+    isMemberUpdatePopup: false,
+    isProfileImgViewer: false,
   });
   const [columnFilters, setColumnFilters] = useState({
     memberApproval: "all",
@@ -67,6 +69,8 @@ const MemberManagement = () => {
             data={data}
             tableWFull={tableWFull}
             columnFilters={columnFilters}
+            popups={popups}
+            setPopups={setPopups}
           />
         </div>
       </div>

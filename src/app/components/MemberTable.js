@@ -39,6 +39,7 @@ import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
 import { toastError, toastSuccess } from "../functions/toast";
 import PhoneNumber from "./PhoneNumber";
 import avatarLoader from "../../../public/avatar-loader.gif";
+import ProfileImageViewer from "./ProfileImageViewer";
 
 const MemberTable = ({
   data,
@@ -46,6 +47,8 @@ const MemberTable = ({
   tableWFull,
   columnFilters,
   setIsLoading,
+  popups,
+  setPopups,
 }) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
@@ -53,9 +56,6 @@ const MemberTable = ({
   const [avatarLoading, setAvatarLoading] = useState(true);
 
   const columnHelper = createColumnHelper();
-  const [popups, setPopups] = useState({
-    isMemberUpdatePopup: false,
-  });
   const [currentRow, setCurrentRow] = useState({});
 
   // fetchData
@@ -125,7 +125,13 @@ const MemberTable = ({
   const columns = [
     columnHelper.accessor("profile_image_url", {
       cell: (info) => (
-        <div className="object-cover w-10 h-10 rounded-full cursor-pointer hover:animate-pulse">
+        <div
+          className="object-cover w-10 h-10 rounded-full cursor-pointer hover:animate-pulse"
+          onClick={() => {
+            setCurrentRow(info.row.original);
+            openProfileImgViewer();
+          }}
+        >
           <Image
             className={`absolute  ${!avatarLoading ? "hidden" : ""}`}
             src={avatarLoader}
@@ -247,7 +253,13 @@ const MemberTable = ({
     columnHelper.accessor("", {
       cell: (info) => (
         <div className="flex items-center justify-center">
-          <button className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+          <button
+            className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
+            onClick={() => {
+              setCurrentRow(info.row.original);
+              openUpdateMember();
+            }}
+          >
             <FaPencil
               size={25}
               color={
@@ -256,10 +268,6 @@ const MemberTable = ({
                   ? "#4ade80"
                   : "white"
               }
-              onClick={() => {
-                openUpdateMember();
-                setCurrentRow(info.row.original);
-              }}
             />
           </button>
           <button
@@ -322,6 +330,20 @@ const MemberTable = ({
     }));
   };
 
+  const openProfileImgViewer = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isProfileImgViewer"]: true,
+    }));
+  };
+
+  const closeProfileImgViewer = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isProfileImgViewer"]: false,
+    }));
+  };
+
   return (
     <>
       <MemberUpdatePopup
@@ -329,6 +351,12 @@ const MemberTable = ({
         open={popups.isMemberUpdatePopup}
         currentRow={currentRow}
         onClose={closeUpdateMember}
+      />
+
+      <ProfileImageViewer
+        open={popups.isProfileImgViewer}
+        img={currentRow.profile_image_url}
+        onClose={closeProfileImgViewer}
       />
 
       <div

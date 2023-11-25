@@ -21,6 +21,10 @@ import ReactPaginate from "react-paginate";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import PhoneNumber from "./PhoneNumber";
 import { toastError } from "../functions/toast";
+import {
+  getAstrologyServicesValue,
+  getOptionsValue,
+} from "../functions/functions";
 
 const AstrologyReqTable = ({
   setIsLoading,
@@ -121,7 +125,7 @@ const AstrologyReqTable = ({
       header: "Description",
     }),
     columnHelper.accessor("package_type", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <span>{getAstrologyServicesValue(info.getValue())}</span>,
       header: "Service",
     }),
     columnHelper.accessor("payment_status", {

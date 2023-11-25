@@ -29,6 +29,7 @@ const OptionBar = ({
       memberApproval: "all",
       payment_status: "all",
       payment_method: "all",
+      complete_status: "all",
     });
     if (member) {
       const form = document.querySelector("#searchForm");
@@ -96,6 +97,18 @@ const OptionBar = ({
               <option value={0}>Bank Transfer</option>
               <option value={1}>Online</option>
               <option value={"all"}>Online & Bank Transfer </option>
+            </select>
+          </div>
+          <div className="flex items-center ml-10">
+            <select
+              name="complete_status"
+              value={columnFilters.complete_status}
+              onChange={filterOnChangeHandler}
+              className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+            >
+              <option value={0}>Pending</option>
+              <option value={1}>Complete</option>
+              <option value={"all"}>Pending & Complete </option>
             </select>
           </div>
         </>
