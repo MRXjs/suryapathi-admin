@@ -113,3 +113,28 @@ export async function imageUrlToFile(imageUrl, fileName = "image.jpg") {
     return null;
   }
 }
+
+export function convertTo12HourFormat(time24) {
+  if (time24) {
+    // Split the time string into hours and minutes
+    var [hours, minutes] = time24.split(":");
+
+    // Convert hours to a number
+    hours = parseInt(hours, 10);
+
+    // Determine AM or PM
+    var period = hours >= 12 ? "PM" : "AM";
+
+    // Convert to 12-hour format
+    hours = hours % 12 || 12;
+
+    // Format minutes to include leading zero if necessary
+    minutes = parseInt(minutes, 10) < 10 ? "0" + minutes : minutes;
+
+    // Construct the 12-hour time format
+    var time12 = hours + ":" + minutes + " " + period;
+    return time12;
+  } else {
+    return "Time not entered";
+  }
+}

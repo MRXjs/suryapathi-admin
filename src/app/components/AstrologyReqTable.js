@@ -8,7 +8,7 @@ import {
   getPaginationRowModel,
   useReactTable,
 } from "@tanstack/react-table";
-import { paymentStatus, reqStatus } from "@/DB/selecterOptions";
+import { districts, paymentStatus, reqStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
 import {
   astroReqDelete,
@@ -22,6 +22,7 @@ import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import PhoneNumber from "./PhoneNumber";
 import { toastError } from "../functions/toast";
 import {
+  convertTo12HourFormat,
   getAstrologyServicesValue,
   getOptionsValue,
 } from "../functions/functions";
@@ -109,6 +110,20 @@ const AstrologyReqTable = ({
         <span>{`${info.row.original.first_name} ${info.row.original.last_name}`}</span>
       ),
       header: "Name",
+    }),
+    columnHelper.accessor("birthday", {
+      cell: (info) => <span>{info.getValue()}</span>,
+      header: "BirthDay",
+    }),
+    columnHelper.accessor("birthtime", {
+      cell: (info) => <span>{convertTo12HourFormat(info.getValue())}</span>,
+      header: "BirthTime",
+    }),
+    columnHelper.accessor("birthplace", {
+      cell: (info) => (
+        <span>{getOptionsValue(districts, info.getValue())}</span>
+      ),
+      header: "BirthPlace",
     }),
     columnHelper.accessor("phone", {
       cell: (info) => (
