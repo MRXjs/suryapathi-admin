@@ -189,3 +189,15 @@ export const memberApprovalChange = async (e, setData) => {
     toastError(error.message && error.message);
   }
 };
+
+export const getSomeMembers = async (ids) => {
+  try {
+    const resp = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/admin/member/some-with-data`,
+      ids
+    );
+    console.log(resp);
+  } catch (error) {
+    console.log(error);
+  }
+};

@@ -23,6 +23,9 @@ import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import { weddingServicePricingPlans } from "@/DB/pricingPlans";
 import PhoneNumber from "./PhoneNumber";
 import { toastError } from "../functions/toast";
+import { useRouter } from "next/navigation";
+import { copyToClipboard } from "../functions/functions";
+import { getSomeMembers } from "../api/member";
 
 const ProposalReqTable = ({
   setIsLoading,
@@ -32,6 +35,7 @@ const ProposalReqTable = ({
   columnFilters,
   tableWFull,
 }) => {
+  const router = useRouter();
   const columnHelper = createColumnHelper();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -39,14 +43,18 @@ const ProposalReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    try {
-      setIsLoading(true);
-      const resp = await getAllProposalReq(pg, columnFilters);
-      setData(resp.rows);
-      setPageCount(Math.ceil(resp.count / 10));
-      setIsLoading(false);
-    } catch (error) {
-      toastError(error);
+    if (localStorage.getItem("token")) {
+      try {
+        setIsLoading(true);
+        const resp = await getAllProposalReq(pg, columnFilters);
+        setData(resp.rows);
+        setPageCount(Math.ceil(resp.count / 10));
+        setIsLoading(false);
+      } catch (error) {
+        toastError(error);
+      }
+    } else {
+      router.push("/auth");
     }
   };
 
@@ -59,6 +67,13 @@ const ProposalReqTable = ({
     setData([]);
     setCurrentPage(selected);
     fetchData(selected + 1);
+  };
+
+  const selectedMemberCopy = async (ids) => {
+    setIsLoading(true);
+    const text = await getSomeMembers(ids);
+    await copyToClipboard(text);
+    setIsLoading(false);
   };
 
   const rowDelete = async (id) => {
@@ -134,13 +149,15 @@ const ProposalReqTable = ({
     }),
     columnHelper.accessor("selected_members", {
       cell: (info) => (
-        <div>
-          {JSON.parse(info.getValue()).map((item, index) => (
-            <span className="mx-2" key={index}>
-              {`${item} `}
-            </span>
-          ))}
-        </div>
+        <button
+          type="button"
+          className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
+          onClick={() => {
+            selectedMemberCopy(JSON.parse(info.getValue()));
+          }}
+        >
+          Copy
+        </button>
       ),
       header: "Selected Members",
     }),

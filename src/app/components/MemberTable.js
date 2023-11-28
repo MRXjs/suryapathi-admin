@@ -40,6 +40,7 @@ import { toastError, toastSuccess } from "../functions/toast";
 import PhoneNumber from "./PhoneNumber";
 import avatarLoader from "../../../public/avatar-loader.gif";
 import ProfileImageViewer from "./ProfileImageViewer";
+import { useRouter } from "next/navigation";
 
 const MemberTable = ({
   data,
@@ -50,6 +51,7 @@ const MemberTable = ({
   popups,
   setPopups,
 }) => {
+  const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
@@ -60,14 +62,18 @@ const MemberTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    try {
-      setIsLoading(true);
-      const resp = await getAllMember(pg, columnFilters);
-      setData(resp.rows);
-      setPageCount(Math.ceil(resp.count / 10));
-      setIsLoading(false);
-    } catch (error) {
-      toastError(error);
+    if (localStorage.getItem("token")) {
+      try {
+        setIsLoading(true);
+        const resp = await getAllMember(pg, columnFilters);
+        setData(resp.rows);
+        setPageCount(Math.ceil(resp.count / 10));
+        setIsLoading(false);
+      } catch (error) {
+        toastError(error);
+      }
+    } else {
+      router.push("/auth");
     }
   };
 

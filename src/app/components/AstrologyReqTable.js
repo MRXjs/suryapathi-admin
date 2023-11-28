@@ -26,6 +26,7 @@ import {
   getAstrologyServicesValue,
   getOptionsValue,
 } from "../functions/functions";
+import { useRouter } from "next/navigation";
 
 const AstrologyReqTable = ({
   setIsLoading,
@@ -34,6 +35,7 @@ const AstrologyReqTable = ({
   columnFilters,
   tableWFull,
 }) => {
+  const router = useRouter();
   const columnHelper = createColumnHelper();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -41,15 +43,19 @@ const AstrologyReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    try {
-      setIsLoading(true);
-      const resp = await getAllAstrologyReq(pg, columnFilters);
-      console.log(resp);
-      setData(resp.rows);
-      setPageCount(Math.ceil(resp.count / 10));
-      setIsLoading(false);
-    } catch (error) {
-      toastError(error);
+    if (localStorage.getItem("token")) {
+      try {
+        setIsLoading(true);
+        const resp = await getAllAstrologyReq(pg, columnFilters);
+        console.log(resp);
+        setData(resp.rows);
+        setPageCount(Math.ceil(resp.count / 10));
+        setIsLoading(false);
+      } catch (error) {
+        toastError(error);
+      }
+    } else {
+      router.push("/auth");
     }
   };
 

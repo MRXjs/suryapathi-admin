@@ -12,6 +12,7 @@ import { districts, paymentStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { getAllBabyNameReq } from "../api/babyNameReq";
 import { toastError } from "../functions/toast";
+import { useRouter } from "next/navigation";
 
 const BabyNameReqTable = ({
   setIsLoading,
@@ -20,6 +21,7 @@ const BabyNameReqTable = ({
   columnFilters,
   tableWFull,
 }) => {
+  const router = useRouter();
   const columnHelper = createColumnHelper();
 
   const [currentPage, setCurrentPage] = useState(0);
@@ -27,14 +29,18 @@ const BabyNameReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    try {
-      setIsLoading(true);
-      const resp = await getAllBabyNameReq(pg, columnFilters);
-      setData(resp.rows);
-      setPageCount(Math.ceil(resp.count / 10));
-      setIsLoading(false);
-    } catch (error) {
-      toastError(error);
+    if (localStorage.getItem("token")) {
+      try {
+        setIsLoading(true);
+        const resp = await getAllBabyNameReq(pg, columnFilters);
+        setData(resp.rows);
+        setPageCount(Math.ceil(resp.count / 10));
+        setIsLoading(false);
+      } catch (error) {
+        toastError(error);
+      }
+    } else {
+      router.push("/auth");
     }
   };
 
