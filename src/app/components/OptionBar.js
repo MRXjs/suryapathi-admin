@@ -5,6 +5,7 @@ import { AiOutlinePlus } from "react-icons/ai";
 import Search from "./Search";
 import BtnPrimary from "./BtnPrimary";
 import { IoIosRefresh } from "react-icons/io";
+import AddBtn from "./AddBtn";
 
 const OptionBar = ({
   setIsLoading,
@@ -16,6 +17,8 @@ const OptionBar = ({
   columnFilters,
   setData,
   openAddMember,
+  videoGallery,
+  openAddVideo,
 }) => {
   const filterOnChangeHandler = (e) => {
     setColumnFilters((prevValue) => ({
@@ -43,37 +46,29 @@ const OptionBar = ({
         fullWidth ? "left-72" : "left-20  duration-300"
       } `}
     >
-      {member ? (
-        <>
-          <button
-            onClick={openAddMember}
-            class="bg-blue-500 ml-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center text-lg duration-300"
-          >
-            <IconContext.Provider
-              value={{ color: "white", size: "25", className: "mr-2" }}
-            >
-              <div>
-                <AiOutlinePlus />
-              </div>
-            </IconContext.Provider>
-            Add Member
-          </button>
-          <div className="flex items-center ml-10">
-            <select
-              name="memberApproval"
-              value={columnFilters.memberApproval}
-              onChange={filterOnChangeHandler}
-              className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
-            >
-              <option value={0}>Unapproved</option>
-              <option value={1}>Approved</option>
-              <option value={"all"}>Unapproved & Approved </option>
-            </select>
-          </div>
-        </>
+      {member || videoGallery ? (
+        <AddBtn
+          onClick={member ? openAddMember : openAddVideo}
+          text={member ? "Add Member" : "Add Video"}
+        />
       ) : null}
 
-      {!member ? (
+      {member ? (
+        <div className="flex items-center ml-10">
+          <select
+            name="memberApproval"
+            value={columnFilters.memberApproval}
+            onChange={filterOnChangeHandler}
+            className="bg-gray-50 border border-gray-300 text-gray-900  rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 "
+          >
+            <option value={0}>Unapproved</option>
+            <option value={1}>Approved</option>
+            <option value={"all"}>Unapproved & Approved </option>
+          </select>
+        </div>
+      ) : null}
+
+      {!member && !videoGallery ? (
         <>
           <div className="flex items-center ml-10">
             <select

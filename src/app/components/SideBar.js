@@ -4,31 +4,15 @@ import Image from "next/image";
 import { IconContext } from "react-icons";
 import controler from "../../../public/control.png";
 import sideBarLogo from "../../../public/log-side-bar.png";
-import { MdManageAccounts } from "react-icons/md";
-import { BiLogOutCircle } from "react-icons/bi";
-import { FaSun } from "react-icons/fa";
-import { LuBaby } from "react-icons/lu";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
-import { BsFillEnvelopePaperHeartFill, BsPersonHearts } from "react-icons/Bs";
+import { Menus } from "@/DB/sidebarData";
 
 const SideBar = ({ tableWFull }) => {
   const router = useRouter();
   const path = usePathname();
   const [pathName, setPathName] = useState(path);
   const [sideBarOpen, setSideBarOpen] = useState(true);
-
-  const Menus = [
-    { title: "Member Management", icon: <MdManageAccounts />, url: "/" },
-    {
-      title: "Proposal Request",
-      icon: <BsFillEnvelopePaperHeartFill />,
-      url: "/proposalreq/",
-    },
-    { title: "Astrology Requests", icon: <FaSun />, url: "/astrologyreq/" },
-    { title: "Baby Name Requests", icon: <LuBaby />, url: "/babynamereq/" },
-    { title: "Log Out", icon: <BiLogOutCircle />, url: "/auth/" },
-  ];
 
   const sideBarController = () => {
     setSideBarOpen(!sideBarOpen);
@@ -82,7 +66,7 @@ const SideBar = ({ tableWFull }) => {
             >
               {/* {menu.title} */}
               <IconContext.Provider value={{ size: "25" }}>
-                <div className="shrink-0">{menu.icon}</div>
+                <div className="text-white shrink-0">{menu.icon}</div>
               </IconContext.Provider>
               <span
                 className={`${

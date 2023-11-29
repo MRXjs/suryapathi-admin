@@ -10,7 +10,6 @@ import {
 } from "@tanstack/react-table";
 import { paymentStatus, reqStatus } from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
-import { astroReqDelete } from "../api/astroReq";
 import { FcApproval, FcHighPriority } from "react-icons/fc";
 import {
   getAllProposalReq,
