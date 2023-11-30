@@ -5,11 +5,14 @@ import SideBar from "./SideBar";
 import OptionBar from "./OptionBar";
 import LoadingScreen from "./LoadingScreen";
 import AddMemberPopup from "./AddMemberPopup";
+import MemberUpdatePopup from "./MemberUpdatePopup";
+import ProfileImageViewer from "./ProfileImageViewer";
 
 const MemberManagement = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [tableWFull, setTableWFull] = useState(true);
   const [data, setData] = useState([]);
+  const [currentRow, setCurrentRow] = useState({});
   const [popups, setPopups] = useState({
     addMemberPopup: false,
     isMemberUpdatePopup: false,
@@ -21,6 +24,14 @@ const MemberManagement = () => {
     payment_method: "all",
   });
 
+  const refresh = () => {
+    setColumnFilters({
+      memberApproval: "all",
+      payment_status: "all",
+      payment_method: "all",
+    });
+  };
+
   const openAddMember = () => {
     setPopups((prevValue) => ({
       ...prevValue,
@@ -29,9 +40,39 @@ const MemberManagement = () => {
   };
 
   const closeAddMember = () => {
+    refresh();
     setPopups((prevValue) => ({
       ...prevValue,
       ["addMemberPopup"]: false,
+    }));
+  };
+
+  const openUpdateMember = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isMemberUpdatePopup"]: true,
+    }));
+  };
+
+  const closeUpdateMember = () => {
+    refresh();
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isMemberUpdatePopup"]: false,
+    }));
+  };
+
+  const openProfileImgViewer = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isProfileImgViewer"]: true,
+    }));
+  };
+
+  const closeProfileImgViewer = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isProfileImgViewer"]: false,
     }));
   };
 
@@ -44,6 +85,20 @@ const MemberManagement = () => {
         isLoading={isLoading}
         setIsLoading={setIsLoading}
       />
+
+      <MemberUpdatePopup
+        setIsLoading={setIsLoading}
+        open={popups.isMemberUpdatePopup}
+        currentRow={currentRow}
+        onClose={closeUpdateMember}
+      />
+
+      <ProfileImageViewer
+        open={popups.isProfileImgViewer}
+        img={currentRow.profile_image_url}
+        onClose={closeProfileImgViewer}
+      />
+
       <div className="w-screen h-screen">
         <SideBar
           tableWFull={(value) => {
@@ -64,13 +119,13 @@ const MemberManagement = () => {
         <div className="mt-20">
           <MemberTable
             setIsLoading={setIsLoading}
-            isLoading={isLoading}
             setData={setData}
             data={data}
             tableWFull={tableWFull}
             columnFilters={columnFilters}
-            popups={popups}
-            setPopups={setPopups}
+            openUpdateMember={openUpdateMember}
+            setCurrentRow={setCurrentRow}
+            openProfileImgViewer={openProfileImgViewer}
           />
         </div>
       </div>

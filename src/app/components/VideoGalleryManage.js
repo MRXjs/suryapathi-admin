@@ -4,12 +4,14 @@ import LoadingScreen from "./LoadingScreen";
 import SideBar from "./SideBar";
 import OptionBar from "./OptionBar";
 import VideoGalleryTable from "./VideoGalleryTable";
-import videoGalleryData from "@/DB/videoGalleryData";
 import AddVideoPopup from "./AddVideoPopup";
+import VideoViewPopup from "./VideoViewPopup";
+import { ToastContainer } from "react-toastify";
 
 const VideoGalleryManage = () => {
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState(videoGalleryData);
+  const [data, setData] = useState([]);
+  const [currentRow, setCurrentRow] = useState({});
   const [tableWFull, setTableWFull] = useState(true);
   const [columnFilters, setColumnFilters] = useState({
     memberApproval: "all",
@@ -20,7 +22,6 @@ const VideoGalleryManage = () => {
 
   const [popups, setPopups] = useState({
     isAddVideoPopup: false,
-    isVideoUpdatePopup: false,
     isVideoViewer: false,
   });
 
@@ -32,15 +33,37 @@ const VideoGalleryManage = () => {
   };
 
   const closeAddVideo = () => {
+    setColumnFilters({
+      memberApproval: "all",
+      payment_status: "all",
+      payment_method: "all",
+      complete_status: "all",
+    });
     setPopups((prevValue) => ({
       ...prevValue,
       ["isAddVideoPopup"]: false,
     }));
   };
 
+  const openVideoViewer = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isVideoViewer"]: true,
+    }));
+    console.log("test");
+  };
+
+  const closeVideoViewer = () => {
+    setPopups((prevValue) => ({
+      ...prevValue,
+      ["isVideoViewer"]: false,
+    }));
+  };
+
   return (
     <div>
       <>
+        <ToastContainer />
         {isLoading ? <LoadingScreen /> : null}
 
         <AddVideoPopup
@@ -48,6 +71,12 @@ const VideoGalleryManage = () => {
           onClose={closeAddVideo}
           isLoading={isLoading}
           setIsLoading={setIsLoading}
+        />
+
+        <VideoViewPopup
+          open={popups.isVideoViewer}
+          video={currentRow}
+          onClose={closeVideoViewer}
         />
 
         <div>
@@ -72,6 +101,9 @@ const VideoGalleryManage = () => {
               data={data}
               columnFilters={columnFilters}
               tableWFull={tableWFull}
+              setCurrentRow={setCurrentRow}
+              currentRow={currentRow}
+              openVideoViewer={openVideoViewer}
             />
           </div>
         </div>

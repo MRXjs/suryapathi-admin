@@ -149,3 +149,9 @@ export const searchOption = [
   { text: "Phone", value: "phone" },
   { text: "NIC", value: "nic" },
 ];
+
+export const nameCategories = [
+  { value: "දේශීය සින්හල නම්" },
+  { value: "බටහිර නම්" },
+  { value: "දේශීය විදේශිය නම්" },
+];

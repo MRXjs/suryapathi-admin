@@ -39,4 +39,15 @@ export const formValidations = {
   email: {
     required: { message: "ඔබේ විද්‍යුත් තැපැල් ලිපිනය ඇතුළත් කළ යුතුය." },
   },
+  videoTitle: {
+    required: { message: "වීඩියෝවේ මාතෘකාව ඇතුළත් කරන්න." },
+  },
+  videoURL: {
+    required: { message: "වීඩියෝවේ URL එක ඇතුළත් කරන්න." },
+    pattern: {
+      stringPattern:
+        /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]{11}$/,
+      message: "වලංගු URL එකක් නොවේ.",
+    },
+  },
 };

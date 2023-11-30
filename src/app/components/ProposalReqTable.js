@@ -21,9 +21,9 @@ import ReactPaginate from "react-paginate";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import { weddingServicePricingPlans } from "@/DB/pricingPlans";
 import PhoneNumber from "./PhoneNumber";
-import { toastError } from "../functions/toast";
+import { toastError, toastSuccess } from "../functions/toast";
 import { useRouter } from "next/navigation";
-import { copyToClipboard } from "../functions/functions";
+import { copyToClipboard, createProposalReqMsg } from "../functions/functions";
 import { getSomeMembers } from "../api/member";
 
 const ProposalReqTable = ({
@@ -70,8 +70,14 @@ const ProposalReqTable = ({
 
   const selectedMemberCopy = async (ids) => {
     setIsLoading(true);
-    const text = await getSomeMembers(ids);
-    await copyToClipboard(text);
+    try {
+      const data = await getSomeMembers(ids);
+      const text = await createProposalReqMsg(data);
+      await copyToClipboard(text);
+      toastSuccess(`Successfully copied data ${ids}`);
+    } catch (error) {
+      toastError(error);
+    }
     setIsLoading(false);
   };
 
@@ -100,7 +106,7 @@ const ProposalReqTable = ({
       cell: (info) => (
         <span>
           {info.row.original.complete_status ? (
-            <div className=" animate-pulse">
+            <div className="">
               <FcApproval size={35} />
             </div>
           ) : (
@@ -124,7 +130,7 @@ const ProposalReqTable = ({
     }),
     columnHelper.accessor("phone", {
       cell: (info) => (
-        <PhoneNumber payment={info.row.original.payment_status} info={info} />
+        <PhoneNumber isGreen={info.row.original.payment_status} info={info} />
       ),
       header: "Phone Number",
     }),

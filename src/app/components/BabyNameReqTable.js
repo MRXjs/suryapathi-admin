@@ -8,11 +8,26 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import React, { useEffect, useState } from "react";
-import { districts, paymentStatus } from "@/DB/selecterOptions";
+import {
+  districts,
+  gender,
+  nameCategories,
+  paymentStatus,
+  reqStatus,
+} from "@/DB/selecterOptions";
 import { BsFillTrashFill } from "react-icons/Bs";
-import { getAllBabyNameReq } from "../api/babyNameReq";
+import {
+  babyNameReqCompleteStateChange,
+  babyNameReqDelete,
+  babyNameReqPaymentStatusChange,
+  getAllBabyNameReq,
+} from "../api/babyNameReq";
 import { toastError } from "../functions/toast";
 import { useRouter } from "next/navigation";
+import ReactPaginate from "react-paginate";
+import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
+import { convertTo12HourFormat, getOptionsValue } from "../functions/functions";
+import { FcApproval, FcHighPriority } from "react-icons/fc";
 
 const BabyNameReqTable = ({
   setIsLoading,
@@ -55,7 +70,43 @@ const BabyNameReqTable = ({
     fetchData(selected + 1);
   };
 
+  const paymentStatusHandler = async (e) => {
+    setIsLoading(true);
+    await babyNameReqPaymentStatusChange(e, data, setData);
+    setIsLoading(false);
+  };
+
+  const rowDelete = async (id) => {
+    setIsLoading(true);
+    if (confirm("Are you sure you want to delete?")) {
+      await babyNameReqDelete(id, setData);
+    }
+    setIsLoading(false);
+  };
+
+  const statusHandler = async (e) => {
+    setIsLoading(true);
+    await babyNameReqCompleteStateChange(e, data, setData);
+    setIsLoading(false);
+  };
+
   const columns = [
+    columnHelper.accessor("showStatus", {
+      cell: (info) => (
+        <span>
+          {info.row.original.complete_status ? (
+            <div className="">
+              <FcApproval size={35} />
+            </div>
+          ) : (
+            <div className=" animate-pulse">
+              <FcHighPriority size={35} />
+            </div>
+          )}
+        </span>
+      ),
+      header: "",
+    }),
     columnHelper.accessor("id", {
       cell: (info) => <span>{info.getValue()}</span>,
       header: "ID",
@@ -65,11 +116,11 @@ const BabyNameReqTable = ({
       header: "Birth Day",
     }),
     columnHelper.accessor("birthtime", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <span>{convertTo12HourFormat(info.getValue())}</span>,
       header: "Birth Time",
     }),
     columnHelper.accessor("gender", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => <span>{getOptionsValue(gender, info.getValue())}</span>,
       header: "Gender",
     }),
 
@@ -84,7 +135,9 @@ const BabyNameReqTable = ({
       header: "City",
     }),
     columnHelper.accessor("expected_name", {
-      cell: (info) => <span>{info.getValue()}</span>,
+      cell: (info) => (
+        <span>{getOptionsValue(nameCategories, info.getValue())}</span>
+      ),
       header: "Expected Name",
     }),
     columnHelper.accessor("description", {
@@ -95,13 +148,17 @@ const BabyNameReqTable = ({
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Phone",
     }),
-    columnHelper.accessor("name", {
-      cell: (info) => <span>{info.getValue()}</span>,
+    columnHelper.accessor("full_name", {
+      cell: (info) => (
+        <span>{`${info.row.original.first_name} ${info.row.original.last_name}`}</span>
+      ),
       header: "Name",
     }),
     columnHelper.accessor("payment_status", {
       cell: (info) => (
         <select
+          id={info.row.original.id}
+          onChange={paymentStatusHandler}
           value={info.getValue()}
           className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
             info.getValue() ? "!text-green-400 font-bold" : ""
@@ -143,6 +200,29 @@ const BabyNameReqTable = ({
         </div>
       ),
       header: "Actions",
+    }),
+    columnHelper.accessor("complete_status", {
+      cell: (info) => (
+        <select
+          id={info.row.original.id}
+          onChange={statusHandler}
+          value={info.getValue()}
+          className={`bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block  p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 ${
+            info.row.original.payment_status ? "!text-green-400" : ""
+          }`}
+        >
+          {reqStatus.map((state, index) => (
+            <option
+              key={index}
+              value={state.value}
+              className={`${state.value ? "text-green-400" : " text-red-500"}`}
+            >
+              {state.text}
+            </option>
+          ))}
+        </select>
+      ),
+      header: "Status",
     }),
   ];
 
@@ -187,9 +267,7 @@ const BabyNameReqTable = ({
                       <td
                         key={cell.id}
                         className={`px-3.5 py-2 ${
-                          row.original.payment_status
-                            ? " text-green-400 font-bold"
-                            : ""
+                          row.original.payment_status ? " text-green-400 " : ""
                         }`}
                       >
                         {flexRender(
@@ -205,57 +283,24 @@ const BabyNameReqTable = ({
         </table>
         {/* pagination */}
         <div className="fixed bottom-0 left-0 z-0 w-full bg-white ">
-          <div className="flex items-center justify-end gap-2 my-5">
-            <button
-              onClick={() => {
-                table.previousPage();
-              }}
-              disabled={!table.getCanPreviousPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {"<"}
-            </button>
-            <button
-              onClick={() => {
-                table.nextPage();
-              }}
-              disabled={!table.getCanNextPage()}
-              className="p-1 px-2 font-bold text-white bg-blue-500 border border-gray-300 disabled:opacity-30 hover:bg-blue-700"
-            >
-              {">"}
-            </button>
-            <span className="flex items-center gap-1">
-              <div>page</div>
-              <strong>
-                {table.getState().pagination.pageIndex + 1} of{" "}
-                {table.getPageCount()}
-              </strong>
-            </span>
-            <span className="flex items-center gap-1">
-              Go to page:{" "}
-              <input
-                type="number"
-                defaultValue={table.getState().pagination.pageIndex + 1}
-                onChange={(e) => {
-                  const page = e.target.value ? Number(e.target.value) - 1 : 0;
-                  table.setPageIndex(page);
-                }}
-                className="w-16 p-1 bg-transparent border rounded"
-              />
-            </span>
-            <select
-              value={table.getState().pagination.pageSize}
-              onChange={(e) => {
-                table.setPageSize(Number(e.target.value));
-              }}
-              className="p-2 bg-transparent "
-            >
-              {[5, 10, 20, 30, 50, 100].map((pageSize) => (
-                <option key={pageSize} value={pageSize}>
-                  Show {pageSize}
-                </option>
-              ))}
-            </select>
+          <div className="flex items-center justify-end gap-2 my-5 mr-5 ">
+            <ReactPaginate
+              breakLabel="..."
+              nextLabel={<GrLinkNext size={20} />}
+              pageRangeDisplayed={2}
+              marginPagesDisplayed={1}
+              previousLabel={<GrLinkPrevious size={20} />}
+              pageCount={pageCount}
+              onPageChange={onChangePage}
+              containerClassName={"h-[50px] flex items-center "}
+              pageLinkClassName={
+                "px-2 sm:px-5 py-1 sm:py-2  m-[8px] rounded-[5px] border-2 border-solid border-black hover:bg-black hover:text-white transition duration-300"
+              }
+              activeClassName={
+                "bg-black text-white  py-3  m-[8px] rounded-[5px]"
+              }
+              forcePage={currentPage}
+            />
           </div>
         </div>
       </div>

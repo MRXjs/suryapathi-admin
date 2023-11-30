@@ -16,7 +16,6 @@ import {
 } from "@/app/api/member";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { FaPencil } from "react-icons/fa6";
-import MemberUpdatePopup from "./MemberUpdatePopup";
 import {
   approvalStatus,
   castes,
@@ -39,17 +38,17 @@ import { GrLinkPrevious, GrLinkNext } from "react-icons/gr";
 import { toastError, toastSuccess } from "../functions/toast";
 import PhoneNumber from "./PhoneNumber";
 import avatarLoader from "../../../public/avatar-loader.gif";
-import ProfileImageViewer from "./ProfileImageViewer";
 import { useRouter } from "next/navigation";
 
 const MemberTable = ({
   data,
   setData,
+  setCurrentRow,
   tableWFull,
   columnFilters,
   setIsLoading,
-  popups,
-  setPopups,
+  openUpdateMember,
+  openProfileImgViewer,
 }) => {
   const router = useRouter();
   const [currentPage, setCurrentPage] = useState(0);
@@ -58,7 +57,6 @@ const MemberTable = ({
   const [avatarLoading, setAvatarLoading] = useState(true);
 
   const columnHelper = createColumnHelper();
-  const [currentRow, setCurrentRow] = useState({});
 
   // fetchData
   const fetchData = async (pg) => {
@@ -189,7 +187,9 @@ const MemberTable = ({
       header: "NIC",
     }),
     columnHelper.accessor("phone", {
-      cell: (info) => <PhoneNumber info={info} />,
+      cell: (info) => (
+        <PhoneNumber isGreen={info.row.original.approvel_status} info={info} />
+      ),
       header: "Phone Number",
     }),
     columnHelper.accessor("nation", {
@@ -322,49 +322,8 @@ const MemberTable = ({
     getPaginationRowModel: getPaginationRowModel(),
   });
 
-  const openUpdateMember = () => {
-    setPopups((prevValue) => ({
-      ...prevValue,
-      ["isMemberUpdatePopup"]: true,
-    }));
-  };
-
-  const closeUpdateMember = () => {
-    setPopups((prevValue) => ({
-      ...prevValue,
-      ["isMemberUpdatePopup"]: false,
-    }));
-  };
-
-  const openProfileImgViewer = () => {
-    setPopups((prevValue) => ({
-      ...prevValue,
-      ["isProfileImgViewer"]: true,
-    }));
-  };
-
-  const closeProfileImgViewer = () => {
-    setPopups((prevValue) => ({
-      ...prevValue,
-      ["isProfileImgViewer"]: false,
-    }));
-  };
-
   return (
     <>
-      <MemberUpdatePopup
-        setIsLoading={setIsLoading}
-        open={popups.isMemberUpdatePopup}
-        currentRow={currentRow}
-        onClose={closeUpdateMember}
-      />
-
-      <ProfileImageViewer
-        open={popups.isProfileImgViewer}
-        img={currentRow.profile_image_url}
-        onClose={closeProfileImgViewer}
-      />
-
       <div
         className={`p-5 mb-16 ${tableWFull ? "ml-72" : "ml-20"} duration-300  `}
       >

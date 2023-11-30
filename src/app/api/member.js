@@ -1,6 +1,6 @@
 import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
-import { dataURItoFile } from "../functions/functions";
+import { createProposalReqMsg } from "../functions/functions";
 
 // getAllMember
 export const getAllMember = async (pageNumber, columnFilters, globalFilter) => {
@@ -194,10 +194,12 @@ export const getSomeMembers = async (ids) => {
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/member/some-with-data`,
-      ids
+      {
+        ids,
+      }
     );
-    console.log(resp);
+    return resp.data;
   } catch (error) {
-    console.log(error);
+    toastError(error.message && error.message);
   }
 };

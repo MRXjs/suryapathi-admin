@@ -59,7 +59,7 @@ const AddVideoPopup = ({ setIsLoading, open, onClose }) => {
                   id="title"
                   name="title"
                   {...register("title", {
-                    required: formValidations.nicNo.required.message,
+                    required: formValidations.videoTitle.required.message,
                   })}
                   placeholder="Title"
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"
@@ -73,7 +73,11 @@ const AddVideoPopup = ({ setIsLoading, open, onClose }) => {
                   id="url"
                   name="url"
                   {...register("url", {
-                    required: formValidations.phoneNo.required.message,
+                    required: formValidations.videoURL.required.message,
+                    pattern: {
+                      value: formValidations.videoURL.pattern.stringPattern,
+                      message: formValidations.videoURL.pattern.message,
+                    },
                   })}
                   placeholder="URL"
                   className="w-full px-4 py-2 mt-2 rounded-md outline-none ring-1 ring-gray-300 focus:ring-2 focus:ring-teal-300"

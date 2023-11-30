@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   createColumnHelper,
   flexRender,
@@ -11,8 +11,9 @@ import {
 import ReactPaginate from "react-paginate";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
 import { useRouter } from "next/navigation";
-import { FaPencil } from "react-icons/fa6";
 import { BsFillTrashFill } from "react-icons/Bs";
+import { toastError } from "../functions/toast";
+import { getAllVideo, videoDelete } from "../api/videoGallery";
 
 const VideoGalleryTable = ({
   setIsLoading,
@@ -20,6 +21,8 @@ const VideoGalleryTable = ({
   data,
   columnFilters,
   tableWFull,
+  setCurrentRow,
+  openVideoViewer,
 }) => {
   const router = useRouter();
   const columnHelper = createColumnHelper();
@@ -27,12 +30,39 @@ const VideoGalleryTable = ({
   const [currentPage, setCurrentPage] = useState(0);
   const [pageCount, setPageCount] = useState(0);
 
-  const onChangePage = ({ selected }) => {};
+  // fetchData
+  const fetchData = async (pg) => {
+    if (localStorage.getItem("token")) {
+      try {
+        setIsLoading(true);
+        const resp = await getAllVideo(pg);
+        setData(resp.rows);
+        setPageCount(Math.ceil(resp.count / 10));
+        setIsLoading(false);
+      } catch (error) {
+        toastError(error);
+      }
+    } else {
+      router.push("/auth");
+    }
+  };
+
+  useEffect(() => {
+    setCurrentPage(0);
+    fetchData(1);
+  }, [columnFilters]);
+
+  const onChangePage = ({ selected }) => {
+    setData([]);
+    setCurrentPage(selected);
+    fetchData(selected + 1);
+  };
 
   const rowDelete = async (id) => {
     setIsLoading(true);
     if (confirm("Are you sure you want to delete?")) {
-      await memberDelete(id, setData);
+      console.log("test");
+      await videoDelete(id, setData);
     }
     setIsLoading(false);
   };
@@ -46,35 +76,19 @@ const VideoGalleryTable = ({
       cell: (info) => <span>{info.getValue()}</span>,
       header: "Title",
     }),
-    columnHelper.accessor("url", {
-      cell: (info) => <span>{info.getValue()}</span>,
+    columnHelper.accessor("video_id", {
+      cell: (info) => <span>{`https://youtu.be/${info.getValue()}`}</span>,
       header: "URL",
     }),
     columnHelper.accessor("", {
       cell: (info) => (
         <div className="flex ">
           <button
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:outline-none focus:ring-4 focus:ring-blue-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-            onClick={() => {
-              setCurrentRow(info.row.original);
-              openUpdateVideo();
-            }}
-          >
-            <FaPencil
-              size={25}
-              color={
-                info.row.original.approvel_status == "true" ||
-                info.row.original.approvel_status == true
-                  ? "#4ade80"
-                  : "white"
-              }
-            />
-          </button>
-          <button
             type="button"
             className="text-white bg-green-700 hover:bg-green-800 focus:outline-none focus:ring-4 focus:ring-green-300 font-medium rounded-full text-sm px-5 py-2.5 text-center me-2 mb-2 dark:bg-green-600 dark:hover:bg-green-700 dark:focus:ring-green-800"
             onClick={() => {
-              console.log("View");
+              setCurrentRow(info.row.original);
+              openVideoViewer();
             }}
           >
             View

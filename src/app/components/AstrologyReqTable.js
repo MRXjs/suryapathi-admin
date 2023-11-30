@@ -95,7 +95,7 @@ const AstrologyReqTable = ({
       cell: (info) => (
         <span>
           {info.row.original.complete_status ? (
-            <div className=" animate-pulse">
+            <div className="">
               <FcApproval size={35} />
             </div>
           ) : (
@@ -133,7 +133,7 @@ const AstrologyReqTable = ({
     }),
     columnHelper.accessor("phone", {
       cell: (info) => (
-        <PhoneNumber payment={info.row.original.payment_status} info={info} />
+        <PhoneNumber isGreen={info.row.original.payment_status} info={info} />
       ),
       header: "Phone Number",
     }),

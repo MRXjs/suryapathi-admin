@@ -1,6 +1,17 @@
 import { AstrologyServices } from "@/DB/astrologyService";
 import { toastError } from "./toast";
 
+import {
+  castes,
+  districts,
+  gender,
+  maritalStatus,
+  monthlyIncomes,
+  nations,
+  professions,
+  religions,
+} from "@/DB/selecterOptions";
+
 export const calculateAge = (dateOfBirth) => {
   const today = new Date();
   const birthDate = new Date(dateOfBirth);
@@ -138,3 +149,47 @@ export function convertTo12HourFormat(time24) {
     return "Time not entered";
   }
 }
+
+export function extractVideoId(link) {
+  if (link.includes("youtu.be")) {
+    return link.split("/").pop();
+  } else if (link.includes("youtube.com")) {
+    return link.split("?v=")[1].split("&")[0];
+  } else {
+    return null;
+  }
+}
+
+export const createProposalReqMsg = async (data) => {
+  return new Promise((resolve, reject) => {
+    try {
+      let text = "";
+      data.forEach((member) => {
+        text += `
+        නම : ${member.full_name}
+        උපන් දිනය : ${member.birthday}
+        වයස : ${calculateAge(member.birthday)}
+        ස්ත්‍රී/පුරුෂ බාවය : ${getOptionsValue(gender, member.gender)}
+        උස : අඩි ${member.feet} අඟල් ${member.inches}
+        විවාහක තත්ත්වය : ${getOptionsValue(
+          maritalStatus,
+          member.married_status
+        )}
+        ජාතිය : ${getOptionsValue(nations, member.nation)}
+        ආගම : ${getOptionsValue(religions, member.religion)}
+        කුලය : ${getOptionsValue(castes, member.caste)}
+        රැකියාව : ${getOptionsValue(professions, member.job)}
+        මාසික ආදායම : ${getOptionsValue(monthlyIncomes, member.salary)}
+        දිස්ත්‍රීකය : ${getOptionsValue(districts, member.district)}
+        ලිපිනය : ${member.address}
+        දුරකථන අංකය : ${member.phone}
+        පින්තුර: ${member.profile_image_url}
+        
+        `;
+      });
+      resolve(text);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

@@ -1,7 +1,5 @@
 "use client";
-import React, { useState } from "react";
-import { IconContext } from "react-icons";
-import { AiOutlinePlus } from "react-icons/ai";
+import React from "react";
 import Search from "./Search";
 import BtnPrimary from "./BtnPrimary";
 import { IoIosRefresh } from "react-icons/io";
