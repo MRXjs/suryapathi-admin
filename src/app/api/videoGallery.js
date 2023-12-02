@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
 import { extractVideoId } from "../functions/functions";
+axios.defaults.withCredentials = true;
 
 export const getAllVideo = async (pageNumber) => {
   try {

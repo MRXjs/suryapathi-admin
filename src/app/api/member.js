@@ -2,6 +2,7 @@ import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
 import { createProposalReqMsg } from "../functions/functions";
 
+axios.defaults.withCredentials = true;
 // getAllMember
 export const getAllMember = async (pageNumber, columnFilters, globalFilter) => {
   try {

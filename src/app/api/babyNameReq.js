@@ -1,5 +1,6 @@
 import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
+axios.defaults.withCredentials = true;
 
 export const getAllBabyNameReq = async (pageNumber, columnFilters) => {
   try {

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { toastError } from "../functions/toast";
 
+axios.defaults.withCredentials = true;
 export const login = async (e, router) => {
   const loginCredential = {
     username: e.target.username.value,
