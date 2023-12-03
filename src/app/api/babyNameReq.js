@@ -2,7 +2,7 @@ import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
 axios.defaults.withCredentials = true;
 
-export const getAllBabyNameReq = async (pageNumber, columnFilters) => {
+export const getAllBabyNameReq = async (pageNumber, columnFilters, router) => {
   try {
     const params = new URLSearchParams();
     if (columnFilters.payment_status !== "all") {
@@ -21,11 +21,14 @@ export const getAllBabyNameReq = async (pageNumber, columnFilters) => {
     return resp.data;
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
     return null;
   }
 };
 
-export const babyNameReqDelete = async (id, setData) => {
+export const babyNameReqDelete = async (id, setData, router) => {
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/babyname/delete`,
@@ -37,10 +40,18 @@ export const babyNameReqDelete = async (id, setData) => {
     toastSuccess(resp.data && resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
-export const babyNameReqPaymentStatusChange = async (e, data, setData) => {
+export const babyNameReqPaymentStatusChange = async (
+  e,
+  data,
+  setData,
+  router
+) => {
   const currentRow = data.find((row) => row.id == e.target.id);
   if (!currentRow) return;
 
@@ -71,10 +82,18 @@ export const babyNameReqPaymentStatusChange = async (e, data, setData) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
-export const babyNameReqCompleteStateChange = async (e, data, setData) => {
+export const babyNameReqCompleteStateChange = async (
+  e,
+  data,
+  setData,
+  router
+) => {
   const currentRow = data.find((row) => row.id == e.target.id);
   if (!currentRow) return;
 
@@ -104,5 +123,8 @@ export const babyNameReqCompleteStateChange = async (e, data, setData) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };

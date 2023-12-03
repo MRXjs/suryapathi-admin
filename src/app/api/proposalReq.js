@@ -2,7 +2,7 @@ import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
 axios.defaults.withCredentials = true;
 
-export const getAllProposalReq = async (pageNumber, columnFilters) => {
+export const getAllProposalReq = async (pageNumber, columnFilters, router) => {
   try {
     const params = new URLSearchParams();
     if (columnFilters.payment_status !== "all") {
@@ -23,6 +23,9 @@ export const getAllProposalReq = async (pageNumber, columnFilters) => {
     return resp.data;
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
     return null;
   }
 };
@@ -31,7 +34,7 @@ export const proposalReqSearch = async (e) => {
   console.log(e);
 };
 
-export const proposalReqDelete = async (id, setData) => {
+export const proposalReqDelete = async (id, setData, router) => {
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/proposal/delete`,
@@ -43,10 +46,18 @@ export const proposalReqDelete = async (id, setData) => {
     toastSuccess(resp.data && resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
-export const proposalReqPaymentStatusChange = async (e, data, setData) => {
+export const proposalReqPaymentStatusChange = async (
+  e,
+  data,
+  setData,
+  router
+) => {
   const currentRow = data.find((row) => row.id == e.target.id);
   if (!currentRow) return;
 
@@ -77,10 +88,18 @@ export const proposalReqPaymentStatusChange = async (e, data, setData) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
-export const proposalReqCompleteStateChange = async (e, data, setData) => {
+export const proposalReqCompleteStateChange = async (
+  e,
+  data,
+  setData,
+  router
+) => {
   const currentRow = data.find((row) => row.id == e.target.id);
   if (!currentRow) return;
 
@@ -110,5 +129,8 @@ export const proposalReqCompleteStateChange = async (e, data, setData) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };

@@ -50,7 +50,6 @@ const VideoGalleryManage = () => {
       ...prevValue,
       ["isVideoViewer"]: true,
     }));
-    console.log("test");
   };
 
   const closeVideoViewer = () => {

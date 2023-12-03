@@ -44,18 +44,14 @@ const BabyNameReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    if (localStorage.getItem("token")) {
-      try {
-        setIsLoading(true);
-        const resp = await getAllBabyNameReq(pg, columnFilters);
-        setData(resp.rows);
-        setPageCount(Math.ceil(resp.count / 10));
-        setIsLoading(false);
-      } catch (error) {
-        toastError(error);
-      }
-    } else {
-      router.push("/auth");
+    try {
+      setIsLoading(true);
+      const resp = await getAllBabyNameReq(pg, columnFilters, router);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
+    } catch (error) {
+      toastError(error);
     }
   };
 
@@ -72,21 +68,21 @@ const BabyNameReqTable = ({
 
   const paymentStatusHandler = async (e) => {
     setIsLoading(true);
-    await babyNameReqPaymentStatusChange(e, data, setData);
+    await babyNameReqPaymentStatusChange(e, data, setData, router);
     setIsLoading(false);
   };
 
   const rowDelete = async (id) => {
     setIsLoading(true);
     if (confirm("Are you sure you want to delete?")) {
-      await babyNameReqDelete(id, setData);
+      await babyNameReqDelete(id, setData, router);
     }
     setIsLoading(false);
   };
 
   const statusHandler = async (e) => {
     setIsLoading(true);
-    await babyNameReqCompleteStateChange(e, data, setData);
+    await babyNameReqCompleteStateChange(e, data, setData, router);
     setIsLoading(false);
   };
 

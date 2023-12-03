@@ -3,7 +3,7 @@ import { toastError, toastSuccess } from "../functions/toast";
 import { extractVideoId } from "../functions/functions";
 axios.defaults.withCredentials = true;
 
-export const getAllVideo = async (pageNumber) => {
+export const getAllVideo = async (pageNumber, router) => {
   try {
     const resp = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/videogallery/all/${pageNumber}`
@@ -11,11 +11,14 @@ export const getAllVideo = async (pageNumber) => {
     return resp.data;
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
     return null;
   }
 };
 
-export const videoCreate = async (data) => {
+export const videoCreate = async (data, router) => {
   let formData = new FormData();
   formData.append("title", data.title);
   formData.append("video_id", extractVideoId(data.url));
@@ -33,6 +36,9 @@ export const videoCreate = async (data) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.response ? error.response.data.error : error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
@@ -40,7 +46,7 @@ export const videoUpdate = (data) => {
   console.log(data);
 };
 
-export const videoDelete = async (id, setData) => {
+export const videoDelete = async (id, setData, router) => {
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/videogallery/delete`,
@@ -52,5 +58,8 @@ export const videoDelete = async (id, setData) => {
     toastSuccess(resp.data && resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };

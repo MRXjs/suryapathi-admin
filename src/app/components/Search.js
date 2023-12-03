@@ -4,13 +4,15 @@ import React, { useEffect, useState } from "react";
 import { CiSearch } from "react-icons/ci";
 import { memberSearch } from "../api/member";
 import { proposalReqSearch } from "../api/proposalReq";
+import { useRouter } from "next/navigation";
 
 const Search = ({ setData, setIsLoading, member, proposal }) => {
+  const router = useRouter();
   const searchFormSubmit = async (e) => {
     e.preventDefault();
     setIsLoading(true);
     if (member) {
-      const searchResp = await memberSearch(e);
+      const searchResp = await memberSearch(e, router);
       setData(searchResp.rows);
     }
 

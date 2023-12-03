@@ -17,8 +17,10 @@ import {
 import { memberCreate } from "../api/member";
 import { isOlderThan16 } from "../functions/functions";
 import BtnRed from "./BtnRed";
+import { useRouter } from "next/navigation";
 
 const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
+  const router = useRouter();
   const avatarEditorRef = useRef();
   const {
     register,
@@ -32,7 +34,7 @@ const AddMemberPopup = ({ open, onClose, isLoading, setIsLoading }) => {
   if (!open) return null;
   const formSubmitHandler = async (data) => {
     setIsLoading(true);
-    await memberCreate(avatarEditorRef, data);
+    await memberCreate(avatarEditorRef, data, router);
     reset();
     setIsLoading(false);
   };

@@ -43,19 +43,14 @@ const AstrologyReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    if (localStorage.getItem("token")) {
-      try {
-        setIsLoading(true);
-        const resp = await getAllAstrologyReq(pg, columnFilters);
-        console.log(resp);
-        setData(resp.rows);
-        setPageCount(Math.ceil(resp.count / 10));
-        setIsLoading(false);
-      } catch (error) {
-        toastError(error);
-      }
-    } else {
-      router.push("/auth");
+    try {
+      setIsLoading(true);
+      const resp = await getAllAstrologyReq(pg, columnFilters, router);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
+    } catch (error) {
+      toastError(error);
     }
   };
 
@@ -73,20 +68,20 @@ const AstrologyReqTable = ({
   const rowDelete = async (id) => {
     setIsLoading(true);
     if (confirm("Are you sure you want to delete?")) {
-      await astroReqDelete(id, setData);
+      await astroReqDelete(id, setData, router);
     }
     setIsLoading(false);
   };
 
   const paymentStatusHandler = async (e) => {
     setIsLoading(true);
-    await astrologyReqPaymentStatusChange(e, data, setData);
+    await astrologyReqPaymentStatusChange(e, data, setData, router);
     setIsLoading(false);
   };
 
   const statusHandler = async (e) => {
     setIsLoading(true);
-    await astrologyReqCompleteStateChange(e, data, setData);
+    await astrologyReqCompleteStateChange(e, data, setData, router);
     setIsLoading(false);
   };
 

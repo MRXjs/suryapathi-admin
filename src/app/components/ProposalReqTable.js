@@ -42,18 +42,14 @@ const ProposalReqTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    if (localStorage.getItem("token")) {
-      try {
-        setIsLoading(true);
-        const resp = await getAllProposalReq(pg, columnFilters);
-        setData(resp.rows);
-        setPageCount(Math.ceil(resp.count / 10));
-        setIsLoading(false);
-      } catch (error) {
-        toastError(error);
-      }
-    } else {
-      router.push("/auth");
+    try {
+      setIsLoading(true);
+      const resp = await getAllProposalReq(pg, columnFilters, router);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
+    } catch (error) {
+      toastError(error);
     }
   };
 
@@ -71,7 +67,7 @@ const ProposalReqTable = ({
   const selectedMemberCopy = async (ids) => {
     setIsLoading(true);
     try {
-      const data = await getSomeMembers(ids);
+      const data = await getSomeMembers(ids, router);
       const text = await createProposalReqMsg(data);
       await copyToClipboard(text);
       toastSuccess(`Successfully copied data ${ids}`);
@@ -84,20 +80,20 @@ const ProposalReqTable = ({
   const rowDelete = async (id) => {
     setIsLoading(true);
     if (confirm("Are you sure you want to delete?")) {
-      await proposalReqDelete(id, setData);
+      await proposalReqDelete(id, setData, router);
     }
     setIsLoading(false);
   };
 
   const paymentStatusHandler = async (e) => {
     setIsLoading(true);
-    await proposalReqPaymentStatusChange(e, data, setData);
+    await proposalReqPaymentStatusChange(e, data, setData, router);
     setIsLoading(false);
   };
 
   const statusHandler = async (e) => {
     setIsLoading(true);
-    await proposalReqCompleteStateChange(e, data, setData);
+    await proposalReqCompleteStateChange(e, data, setData, router);
     setIsLoading(false);
   };
 

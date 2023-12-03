@@ -6,7 +6,7 @@ const AddBtn = ({ onClick, text }) => {
   return (
     <button
       onClick={onClick}
-      class="bg-blue-500 ml-10 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-md flex items-center text-lg duration-300"
+      className="flex items-center px-4 py-2 ml-10 text-lg font-bold text-white duration-300 bg-blue-500 rounded-md hover:bg-blue-700"
     >
       <IconContext.Provider
         value={{ color: "white", size: "25", className: "mr-2" }}

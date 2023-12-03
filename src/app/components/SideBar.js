@@ -7,6 +7,7 @@ import sideBarLogo from "../../../public/log-side-bar.png";
 import { usePathname } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { Menus } from "@/DB/sidebarData";
+import Cookies from "js-cookie";
 
 const SideBar = ({ tableWFull }) => {
   const router = useRouter();
@@ -21,6 +22,11 @@ const SideBar = ({ tableWFull }) => {
 
   const menusHandler = (url) => {
     router.push(url);
+  };
+
+  const logOutHandler = () => {
+    Cookies.remove("token");
+    router.push("/auth");
   };
 
   return (
@@ -62,7 +68,9 @@ const SideBar = ({ tableWFull }) => {
               className={`flex items-center p-2 text-sm text-gray-300 rounded-md cursor-pointer gap-x-4 hover:bg-light-white ${
                 menu.gap ? "mt-9" : "mt-2"
               } ${menu.url === pathName && "bg-light-white"} `}
-              onClick={() => menusHandler(menu.url)}
+              onClick={() => {
+                menu.logOut ? logOutHandler() : menusHandler(menu.url);
+              }}
             >
               {/* {menu.title} */}
               <IconContext.Provider value={{ size: "25" }}>

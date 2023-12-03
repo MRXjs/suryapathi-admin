@@ -15,5 +15,5 @@ export const Menus = [
   { title: "Astrology Requests", icon: <FaSun />, url: "/astrologyreq/" },
   { title: "Baby Name Requests", icon: <LuBaby />, url: "/babynamereq/" },
   { title: "Video Gallery", icon: <RiGalleryFill />, url: "/video-gallery/" },
-  { title: "Log Out", icon: <BiLogOutCircle />, url: "/auth/" },
+  { title: "Log Out", icon: <BiLogOutCircle />, url: "/auth/", logOut: true },
 ];

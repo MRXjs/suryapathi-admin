@@ -1,33 +1,30 @@
 import axios from "axios";
 import { toastError, toastSuccess } from "../functions/toast";
-import { createProposalReqMsg } from "../functions/functions";
 
 axios.defaults.withCredentials = true;
 // getAllMember
-export const getAllMember = async (pageNumber, columnFilters, globalFilter) => {
+export const getAllMember = async (pageNumber, columnFilters, router) => {
   try {
     const params = new URLSearchParams();
 
     if (columnFilters.memberApproval !== "all") {
       params.append("approvel_status", columnFilters.memberApproval);
     }
-
-    if (globalFilter) {
-      params.append("search", globalFilter);
-    }
-
     const resp = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/member/all-with-data/${pageNumber}?${params}`
     );
     return resp.data;
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
     return null;
   }
 };
 
 // memberCreate
-export const memberCreate = async (avatarEditorRef, data) => {
+export const memberCreate = async (avatarEditorRef, data, router) => {
   let avatar = null;
   if (avatarEditorRef.current) {
     const canvas = avatarEditorRef.current.getImageScaledToCanvas();
@@ -80,11 +77,14 @@ export const memberCreate = async (avatarEditorRef, data) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.response ? error.response.data.error : error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
 // memberSearch
-export const memberSearch = async (e) => {
+export const memberSearch = async (e, router) => {
   try {
     const resp = await axios.get(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/member/search?${e.target.searchColumn.value}=${e.target.searchTeam.value}`
@@ -92,12 +92,15 @@ export const memberSearch = async (e) => {
     return resp.data;
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
     return null;
   }
 };
 
 // memberDelete
-export const memberDelete = async (id, setData) => {
+export const memberDelete = async (id, setData, router) => {
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/member/delete`,
@@ -109,11 +112,14 @@ export const memberDelete = async (id, setData) => {
     toastSuccess(resp.data && resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
 // memberUpdate
-export const memberUpdate = async (avatarEditorRef, row) => {
+export const memberUpdate = async (avatarEditorRef, row, router) => {
   try {
     let avatar = null;
     if (avatarEditorRef.current) {
@@ -159,11 +165,14 @@ export const memberUpdate = async (avatarEditorRef, row) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
 // memberApprovalChange
-export const memberApprovalChange = async (e, setData) => {
+export const memberApprovalChange = async (e, setData, router) => {
   try {
     const id = JSON.parse(e.target.id);
     const value = JSON.parse(e.target.value);
@@ -188,10 +197,13 @@ export const memberApprovalChange = async (e, setData) => {
     toastSuccess(resp.data.message);
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };
 
-export const getSomeMembers = async (ids) => {
+export const getSomeMembers = async (ids, router) => {
   try {
     const resp = await axios.post(
       `${process.env.NEXT_PUBLIC_API_URL}/admin/member/some-with-data`,
@@ -202,5 +214,8 @@ export const getSomeMembers = async (ids) => {
     return resp.data;
   } catch (error) {
     toastError(error.message && error.message);
+    if (error.response && error.response.status === 401) {
+      router.push("/auth");
+    }
   }
 };

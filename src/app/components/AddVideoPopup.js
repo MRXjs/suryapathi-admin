@@ -4,8 +4,10 @@ import FormError from "./FormError";
 import { useForm } from "react-hook-form";
 import { formValidations } from "@/DB/formValidations";
 import { videoCreate } from "../api/videoGallery";
+import { useRouter } from "next/navigation";
 
 const AddVideoPopup = ({ setIsLoading, open, onClose }) => {
+  const router = useRouter();
   const {
     register,
     control,
@@ -17,7 +19,7 @@ const AddVideoPopup = ({ setIsLoading, open, onClose }) => {
 
   const formSubmitHandler = async (data) => {
     setIsLoading(true);
-    await videoCreate(data);
+    await videoCreate(data, router);
     reset();
     setIsLoading(false);
   };

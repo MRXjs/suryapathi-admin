@@ -19,8 +19,10 @@ import BtnPrimary from "./BtnPrimary";
 import BtnRed from "./BtnRed";
 import Avatar from "./Avatar";
 import { memberUpdate } from "../api/member";
+import { useRouter } from "next/navigation";
 
 const MemberUpdatePopup = ({ setIsLoading, open, currentRow, onClose }) => {
+  const router = useRouter();
   const avatarEditorRef = useRef();
   const [AvatarImg, setAvatarImg] = useState(null);
 
@@ -51,7 +53,7 @@ const MemberUpdatePopup = ({ setIsLoading, open, currentRow, onClose }) => {
 
   const formSubmitHandler = async () => {
     setIsLoading(true);
-    await memberUpdate(avatarEditorRef, row);
+    await memberUpdate(avatarEditorRef, row, router);
     setIsLoading(false);
   };
 

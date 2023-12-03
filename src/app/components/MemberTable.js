@@ -30,6 +30,7 @@ import {
 import {
   calculateAge,
   copyToClipboard,
+  createProposalReqMsg,
   downloadImage,
   getOptionsValue,
 } from "../functions/functions";
@@ -60,18 +61,14 @@ const MemberTable = ({
 
   // fetchData
   const fetchData = async (pg) => {
-    if (localStorage.getItem("token")) {
-      try {
-        setIsLoading(true);
-        const resp = await getAllMember(pg, columnFilters);
-        setData(resp.rows);
-        setPageCount(Math.ceil(resp.count / 10));
-        setIsLoading(false);
-      } catch (error) {
-        toastError(error);
-      }
-    } else {
-      router.push("/auth");
+    try {
+      setIsLoading(true);
+      const resp = await getAllMember(pg, columnFilters, router);
+      setData(resp.rows);
+      setPageCount(Math.ceil(resp.count / 10));
+      setIsLoading(false);
+    } catch (error) {
+      toastError(error);
     }
   };
 
@@ -89,29 +86,13 @@ const MemberTable = ({
 
   const approvalHandler = async (e) => {
     setIsLoading(true);
-    await memberApprovalChange(e, setData);
+    await memberApprovalChange(e, setData, router);
     setIsLoading(false);
   };
 
   const rowCopyToClipBoard = async (row) => {
     setIsLoading(true);
-    const text = `
-    නම : ${row.full_name}
-    උපන් දිනය : ${row.birthday}
-    වයස : ${calculateAge(row.birthday)}
-    ස්ත්‍රී/පුරුෂ බාවය : ${getOptionsValue(gender, row.gender)}
-    උස : අඩි ${row.feet} අඟල් ${row.inches}
-    විවාහක තත්ත්වය : ${getOptionsValue(maritalStatus, row.married_status)}
-    ජාතිය : ${getOptionsValue(nations, row.nation)}
-    ආගම : ${getOptionsValue(religions, row.religion)}
-    කුලය : ${getOptionsValue(castes, row.caste)}
-    රැකියාව : ${getOptionsValue(professions, row.job)}
-    මාසික ආදායම : ${getOptionsValue(monthlyIncomes, row.salary)}
-    දිස්ත්‍රීකය : ${getOptionsValue(districts, row.district)}
-    ලිපිනය : ${row.address}
-    දුරකථන අංකය : ${row.phone}
-    පින්තුර: ${row.profile_image_url}`;
-
+    const text = await createProposalReqMsg([row]);
     await copyToClipboard(text)
       .then(() => toastSuccess(`Member ID ${row.id} data copied successfully!`))
       .catch((error) => console.log(error));
@@ -121,7 +102,7 @@ const MemberTable = ({
   const rowDelete = async (id) => {
     setIsLoading(true);
     if (confirm("Are you sure you want to delete?")) {
-      await memberDelete(id, setData);
+      await memberDelete(id, setData, router);
     }
     setIsLoading(false);
   };
