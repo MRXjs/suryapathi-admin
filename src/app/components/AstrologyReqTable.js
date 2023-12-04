@@ -23,6 +23,8 @@ import PhoneNumber from "./PhoneNumber";
 import { toastError } from "../functions/toast";
 import {
   convertTo12HourFormat,
+  convertTo12HourFormatWithoutSeconds,
+  formatDateTime,
   getAstrologyServicesValue,
   getOptionsValue,
 } from "../functions/functions";
@@ -217,6 +219,24 @@ const AstrologyReqTable = ({
         </select>
       ),
       header: "Status",
+    }),
+    columnHelper.accessor("submitted-date", {
+      cell: (info) => (
+        <span>
+          {formatDateTime(info.row.original.created_at).formattedDate}
+        </span>
+      ),
+      header: "Submitted Date",
+    }),
+    columnHelper.accessor("submitted-time", {
+      cell: (info) => (
+        <span>
+          {convertTo12HourFormatWithoutSeconds(
+            formatDateTime(info.row.original.created_at).formattedTime
+          )}
+        </span>
+      ),
+      header: "Submitted Time",
     }),
   ];
 

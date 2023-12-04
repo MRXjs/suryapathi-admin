@@ -29,9 +29,12 @@ import {
 } from "@/DB/selecterOptions";
 import {
   calculateAge,
+  convertTo12HourFormatWithSeconds,
+  convertTo12HourFormatWithoutSeconds,
   copyToClipboard,
   createProposalReqMsg,
   downloadImage,
+  formatDateTime,
   getOptionsValue,
 } from "../functions/functions";
 import ReactPaginate from "react-paginate";
@@ -292,6 +295,24 @@ const MemberTable = ({
         </div>
       ),
       header: "Actions",
+    }),
+    columnHelper.accessor("registered-date", {
+      cell: (info) => (
+        <span>
+          {formatDateTime(info.row.original.created_at).formattedDate}
+        </span>
+      ),
+      header: "Registered Date",
+    }),
+    columnHelper.accessor("registered-time", {
+      cell: (info) => (
+        <span>
+          {convertTo12HourFormatWithoutSeconds(
+            formatDateTime(info.row.original.created_at).formattedTime
+          )}
+        </span>
+      ),
+      header: "Registered Time",
     }),
   ];
 

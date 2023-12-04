@@ -26,7 +26,7 @@ import { toastError } from "../functions/toast";
 import { useRouter } from "next/navigation";
 import ReactPaginate from "react-paginate";
 import { GrLinkNext, GrLinkPrevious } from "react-icons/gr";
-import { convertTo12HourFormat, getOptionsValue } from "../functions/functions";
+import { convertTo12HourFormat, convertTo12HourFormatWithoutSeconds, formatDateTime, getOptionsValue } from "../functions/functions";
 import { FcApproval, FcHighPriority } from "react-icons/fc";
 
 const BabyNameReqTable = ({
@@ -219,6 +219,24 @@ const BabyNameReqTable = ({
         </select>
       ),
       header: "Status",
+    }),
+    columnHelper.accessor("submitted-date", {
+      cell: (info) => (
+        <span>
+          {formatDateTime(info.row.original.created_at).formattedDate}
+        </span>
+      ),
+      header: "Submitted Date",
+    }),
+    columnHelper.accessor("submitted-time", {
+      cell: (info) => (
+        <span>
+          {convertTo12HourFormatWithoutSeconds(
+            formatDateTime(info.row.original.created_at).formattedTime
+          )}
+        </span>
+      ),
+      header: "Submitted Time",
     }),
   ];
 

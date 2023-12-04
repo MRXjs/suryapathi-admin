@@ -23,12 +23,16 @@ import { weddingServicePricingPlans } from "@/DB/pricingPlans";
 import PhoneNumber from "./PhoneNumber";
 import { toastError, toastSuccess } from "../functions/toast";
 import { useRouter } from "next/navigation";
-import { copyToClipboard, createProposalReqMsg } from "../functions/functions";
+import {
+  convertTo12HourFormatWithoutSeconds,
+  copyToClipboard,
+  createProposalReqMsg,
+  formatDateTime,
+} from "../functions/functions";
 import { getSomeMembers } from "../api/member";
 
 const ProposalReqTable = ({
   setIsLoading,
-  isLoading,
   setData,
   data,
   columnFilters,
@@ -236,6 +240,24 @@ const ProposalReqTable = ({
         </select>
       ),
       header: "Status",
+    }),
+    columnHelper.accessor("submitted-date", {
+      cell: (info) => (
+        <span>
+          {formatDateTime(info.row.original.created_at).formattedDate}
+        </span>
+      ),
+      header: "Submitted Date",
+    }),
+    columnHelper.accessor("submitted-time", {
+      cell: (info) => (
+        <span>
+          {convertTo12HourFormatWithoutSeconds(
+            formatDateTime(info.row.original.created_at).formattedTime
+          )}
+        </span>
+      ),
+      header: "Submitted Time",
     }),
   ];
 

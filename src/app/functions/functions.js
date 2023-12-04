@@ -193,3 +193,45 @@ export const createProposalReqMsg = async (data) => {
     }
   });
 };
+
+export function formatDateTime(timestamp) {
+  const date = new Date(timestamp);
+
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1; // Month is zero-indexed
+  const day = date.getDate();
+
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  const seconds = date.getSeconds();
+
+  const formattedDate = `${year}-${month < 10 ? "0" + month : month}-${
+    day < 10 ? "0" + day : day
+  }`;
+  const formattedTime = `${hours < 10 ? "0" + hours : hours}:${
+    minutes < 10 ? "0" + minutes : minutes
+  }:${seconds < 10 ? "0" + seconds : seconds}`;
+
+  return {
+    formattedDate,
+    formattedTime,
+  };
+}
+
+export function convertTo12HourFormatWithoutSeconds(time24) {
+  // Split the time into hours, minutes, and seconds
+  const [hours24, minutes] = time24.split(":").map(Number);
+
+  // Convert hours to 12-hour format
+  let hours12 = hours24 % 12 || 12; // Handle midnight (0) as 12
+
+  // Determine if it's AM or PM
+  const period = hours24 < 12 ? "AM" : "PM";
+
+  // Format the time in 12-hour format without seconds
+  const time12 = `${hours12 < 10 ? "0" + hours12 : hours12}:${
+    minutes < 10 ? "0" + minutes : minutes
+  } ${period}`;
+
+  return time12;
+}

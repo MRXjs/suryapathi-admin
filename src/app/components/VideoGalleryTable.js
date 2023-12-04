@@ -14,6 +14,10 @@ import { useRouter } from "next/navigation";
 import { BsFillTrashFill } from "react-icons/Bs";
 import { toastError } from "../functions/toast";
 import { getAllVideo, videoDelete } from "../api/videoGallery";
+import {
+  convertTo12HourFormatWithoutSeconds,
+  formatDateTime,
+} from "../functions/functions";
 
 const VideoGalleryTable = ({
   setIsLoading,
@@ -101,6 +105,24 @@ const VideoGalleryTable = ({
         </div>
       ),
       header: "Actions",
+    }),
+    columnHelper.accessor("created-date", {
+      cell: (info) => (
+        <span>
+          {formatDateTime(info.row.original.created_at).formattedDate}
+        </span>
+      ),
+      header: "Created Date",
+    }),
+    columnHelper.accessor("created-time", {
+      cell: (info) => (
+        <span>
+          {convertTo12HourFormatWithoutSeconds(
+            formatDateTime(info.row.original.created_at).formattedTime
+          )}
+        </span>
+      ),
+      header: "Created Time",
     }),
   ];
 
